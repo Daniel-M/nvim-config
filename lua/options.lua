@@ -43,7 +43,7 @@ opt.smartindent = true
 -- when cursor reaches end/beginning of line
 opt.whichwrap:append("<>hl")
 
-g.mapleader = " "
+g.mapleader = "\\"
 g.auto_save = false
 
 -- disable builtin vim plugins

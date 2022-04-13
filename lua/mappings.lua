@@ -116,7 +116,7 @@ map("i", "<CR>", "v:lua.completions()", {expr = true})
 map("n", "<leader>et", ":NvimTreeToggle<CR>", opt)
 
 -- format code
-map("n", "<Leader>fm", [[<Cmd> Neoformat<CR>]], opt)
+map("n", "<leader>fm", [[<Cmd> Neoformat<CR>]], opt)
 
 -- dashboard stuff
 map("n", "<Leader>fw", [[<Cmd> Telescope live_grep<CR>]], opt)

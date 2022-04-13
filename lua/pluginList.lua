@@ -18,24 +18,38 @@ return packer.startup(
 
         use {
             "akinsho/nvim-bufferline.lua",
-            after = "nvim-base16.lua"
+            -- after = "nvim-base16.lua"
         }
+
+        -- use {
+        --     "glepnir/galaxyline.nvim",
+        --     after = "nvim-base16.lua",
+        --     config = function()
+        --         require "plugins.statusline"
+        --     end
+        -- }
 
         use {
             "glepnir/galaxyline.nvim",
-            after = "nvim-base16.lua",
-            config = function()
-                require "plugins.statusline"
-            end
+            branch = 'main',
+            -- your statusline
+            -- config = function() require'my_statusline' end,
+            -- some optional icons
+            requires = {'kyazdani42/nvim-web-devicons', opt = true}
         }
 
         -- color related stuff
         use {
-            "siduck76/nvim-base16.lua",
-            after = "packer.nvim",
-            config = function()
-                require "theme"
-            end
+            -- "siduck76/nvim-base16.lua",
+            "RRethy/nvim-base16",
+            -- after = "packer.nvim",
+            -- config = function()
+            --     require "theme"
+            -- end
+        }
+
+        use {
+          "navarasu/onedark.nvim",
         }
 
         use {
@@ -62,14 +76,19 @@ return packer.startup(
             end
         }
 
+        -- use {
+        --     "kabouzeid/nvim-lspinstall",
+        --     event = "BufRead"
+        -- }
+
         use {
-            "kabouzeid/nvim-lspinstall",
-            event = "BufRead"
+            "williamboman/nvim-lsp-installer",
         }
 
         use {
             "neovim/nvim-lspconfig",
-            after = "nvim-lspinstall",
+            -- after = "nvim-lspinstall",
+            -- after = "nvim-lsp-installer",
             config = function()
                 require "plugins.lspconfig"
             end
@@ -113,18 +132,28 @@ return packer.startup(
         }
 
         -- file managing , picker etc
+        -- use {
+        --     "kyazdani42/nvim-tree.lua",
+        --     cmd = "NvimTreeToggle",
+        --     config = function()
+        --         require "plugins.nvimtree"
+        --     end
+        -- }
+
         use {
-            "kyazdani42/nvim-tree.lua",
-            cmd = "NvimTreeToggle",
-            config = function()
-                require "plugins.nvimtree"
-            end
+            'kyazdani42/nvim-tree.lua',
+            -- requires = {
+            --   'kyazdani42/nvim-web-devicons', -- optional, for file icon
+            -- },
+            config = function() require'nvim-tree'.setup {} end
         }
+
 
         use {
             "kyazdani42/nvim-web-devicons",
-            after = "nvim-base16.lua",
+            -- after = "nvim-base16.lua",
             config = function()
+                require "theme"
                 require "plugins.icons"
             end
         }
