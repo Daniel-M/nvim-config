@@ -38,6 +38,7 @@ opt.numberwidth = 2
 opt.expandtab = true
 opt.shiftwidth = 2
 opt.smartindent = true
+opt.tabstop = 4
 
 -- go to previous/next line with h,l,left arrow and right arrow
 -- when cursor reaches end/beginning of line

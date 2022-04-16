@@ -15,6 +15,14 @@ telescope.setup(
                 "--column",
                 "--smart-case"
             },
+            mappings = {
+              i = {
+                ["<esc>"] = require('telescope.actions').close
+              },
+              n = {
+                ["<esc>"] = require('telescope.actions').close
+              },
+            },
             prompt_prefix = "   ",
             selection_caret = "  ",
             entry_prefix = "  ",

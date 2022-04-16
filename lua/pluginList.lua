@@ -103,27 +103,51 @@ return packer.startup(
         }
 
         -- load compe in insert mode only
+        -- use {
+        --     "hrsh7th/nvim-compe",
+        --     event = "InsertEnter",
+        --     config = function()
+        --         require "plugins.compe"
+        --     end,
+        --     wants = "LuaSnip",
+        --     requires = {
+        --         {
+        --             "L3MON4D3/LuaSnip",
+        --             wants = "friendly-snippets",
+        --             event = "InsertCharPre",
+        --             config = function()
+        --                 require "plugins.luasnip"
+        --             end
+        --         },
+        --         {
+        --             "rafamadriz/friendly-snippets",
+        --             event = "InsertCharPre"
+        --         }
+        --     }
+        -- }
+
         use {
-            "hrsh7th/nvim-compe",
-            event = "InsertEnter",
-            config = function()
-                require "plugins.compe"
-            end,
-            wants = "LuaSnip",
-            requires = {
-                {
-                    "L3MON4D3/LuaSnip",
-                    wants = "friendly-snippets",
-                    event = "InsertCharPre",
-                    config = function()
-                        require "plugins.luasnip"
-                    end
-                },
-                {
-                    "rafamadriz/friendly-snippets",
-                    event = "InsertCharPre"
-                }
-            }
+          "hrsh7th/nvim-cmp",
+          event = "InsertEnter",
+          config = function()
+              require "plugins.cmp"
+          end,
+          wants = "vim-vsnip",
+          requires = { {
+                  "hrsh7th/cmp-nvim-lsp",
+              },
+              {
+                  "hrsh7th/vim-vsnip",
+                  wants = "vim-vsnip-integ",
+                  event = "InsertCharPre",
+                  config = function()
+                      require "plugins.vsnip"
+                  end
+              },
+              {
+                "hrsh7th/vim-vsnip-integ"
+              }
+          }
         }
 
         use {
@@ -197,7 +221,7 @@ return packer.startup(
         -- misc plugins
         use {
             "windwp/nvim-autopairs",
-            after = "nvim-compe",
+            after = "nvim-cmp",
             config = function()
                 require "plugins.autopairs"
             end
