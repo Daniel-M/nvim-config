@@ -31,6 +31,7 @@ require('packer').startup(function(use)
   use 'kyazdani42/nvim-tree.lua'
   use 'marko-cerovac/material.nvim'
   use 'mhartington/formatter.nvim'
+  use 'nvim-lualine/lualine.nvim'
   use 'nvim-telescope/telescope-ui-select.nvim'
   use 'rafamadriz/friendly-snippets'
   use 'saadparwaiz1/cmp_luasnip'
