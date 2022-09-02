@@ -21,7 +21,6 @@ require('packer').startup(function(use)
 	use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   -- use 'ldelossa/gh.nvim'
   -- use 'ldelossa/litee.nvim'
-  use 'BurntSushi/ripgrep'
   use 'David-Kunz/cmp-npm'
   use 'David-Kunz/treesitter-unit'
   use 'L3MON4D3/LuaSnip'
@@ -33,6 +32,7 @@ require('packer').startup(function(use)
   use 'marko-cerovac/material.nvim'
   use 'mhartington/formatter.nvim'
   use 'nvim-telescope/telescope-ui-select.nvim'
+  use 'rafamadriz/friendly-snippets'
   use 'saadparwaiz1/cmp_luasnip'
   use 'voldikss/vim-floaterm'
   use 'wbthomason/packer.nvim'
@@ -113,7 +113,7 @@ require('gitsigns').setup({
   end
 })
 
--- sbdchd/neoformat
+-- mhartington/formatter.nvim 
 vim.keymap.set('n', '<leader>F', ':Format<CR>')
 require('formatter').setup({
   logging = false,
@@ -126,6 +126,11 @@ require('formatter').setup({
             args = {vim.api.nvim_buf_get_name(0)},
             stdin = true
           }
+          -- return {
+          --   exe = "js-beautify",
+          --   stdin = true,
+          --   try_node_modules = true,
+          -- }
         end
     },
     rust = {
@@ -137,7 +142,6 @@ require('formatter').setup({
       end
     },
     sql = {
-        -- prettierd
        function()
           return {
             exe = "sqlformat",
@@ -146,6 +150,13 @@ require('formatter').setup({
           }
         end
     },
+    -- Use the special "*" filetype for defining formatter configurations on
+    -- any filetype
+    ["*"] = {
+      -- "formatter.filetypes.any" defines default configurations for any
+      -- filetype
+      require("formatter.filetypes.any").remove_trailing_whitespace
+    }
   }
 })
 local telescope_actions = require("telescope.actions.set")
@@ -173,16 +184,15 @@ require('telescope').setup {
 		grep_string = fixfolds,
 		live_grep = fixfolds,
 		oldfiles = fixfolds,
+	},
+	extensions = {
+	  fzf = {
+	    fuzzy = true,                    -- false will only do exact matching
+	    override_generic_sorter = true,  -- override the generic sorter
+	    override_file_sorter = true,     -- override the file sorter
+	    case_mode = "smart_case",        -- or "ignore_case" or "respect_case" the default case_mode is "smart_case"
+	  }
 	}
-  extensions = {
-    fzf = {
-      fuzzy = true,                    -- false will only do exact matching
-      override_generic_sorter = true,  -- override the generic sorter
-      override_file_sorter = true,     -- override the file sorter
-      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
-                                       -- the default case_mode is "smart_case"
-    }
-  }
 }
 
 -- To get fzf loaded and working with telescope, you need to call
@@ -576,6 +586,7 @@ local has_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
+require("luasnip.loaders.from_vscode").lazy_load()
 local ls = require("luasnip")
 local cmp = require("cmp")
 
@@ -618,6 +629,7 @@ cmp.setup({
   --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
   -- }
 })
+
 
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
