@@ -223,6 +223,16 @@ map("n", "<Esc>", ":noh<CR>", opt)
 map("t", "jk", "<C-\\><C-n>", opt)
 
 
+-- Highlight on yank
+--local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+--vim.api.nvim_create_autocmd('TextYankPost', {
+--  callback = function()
+--    vim.highlight.on_yank()
+--  end,
+--  group = highlight_group,
+--  pattern = '*',
+--})
+
 -- This file can be loaded by calling `lua require("plugins")` from your init.vim
 
 -- Only required if you have packer configured as `opt`
@@ -289,7 +299,12 @@ return require("packer").startup(function()
         require "plugins.cmp"
     end,
     --opt = true,
-    requires = {{"hrsh7th/vim-vsnip"}, {"hrsh7th/vim-vsnip-integ"}}
+    -- requires = {{"hrsh7th/vim-vsnip"}, {"hrsh7th/vim-vsnip-integ"}}
+    requires = {
+      {"saadparwaiz1/cmp_luasnip"},
+      {"L3MON4D3/LuaSnip"},
+      {"rafamadriz/friendly-snippets"},
+    }
   }
 
   use {"hrsh7th/cmp-nvim-lsp"}
@@ -297,11 +312,17 @@ return require("packer").startup(function()
   use {"hrsh7th/cmp-path"}
   use {"hrsh7th/cmp-cmdline"}
 
+  -- use {"saadparwaiz1/cmp_luasnip"}
+  -- use {"L3MON4D3/LuaSnip"}
+  -- use {"rafamadriz/friendly-snippets"}
+
   -- Post-install/update hook with neovim command
-  use { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }
+  use { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" , config = function() require "plugins.treesitter" end }
+  
+  use { "nvim-treesitter/nvim-treesitter-textobjects" }
 
   -- Post-install/update hook with call of vimscript function with argument
-  use { "glacambre/firenvim", run = function() vim.fn["firenvim#install"](0) end }
+  -- use { "glacambre/firenvim", run = function() vim.fn["firenvim#install"](0) end }
 
   -- Use specific branch, dependency and run lua file after load
   -- use {
@@ -312,7 +333,7 @@ return require("packer").startup(function()
   -- }
 
   use { "vim-airline/vim-airline" }
-  use {"vim-airline/vim-airline-themes" }
+  use { "vim-airline/vim-airline-themes" }
 
   -- Use dependency and run lua function after load
   use {
@@ -350,6 +371,25 @@ return require("packer").startup(function()
     end
   }
 
+  use {
+    "wadackel/vim-dogrun"
+  }
+
+  use {
+    "whatyouhide/vim-gotham"
+  }
+
+  use {
+    "cocopon/iceberg.vim"
+  }
+
+  use {
+    "arcticicestudio/nord-vim"
+  }
+
+  use {
+    "mhartington/oceanic-next"
+  }
 
   -- use {
   --     "kabouzeid/nvim-lspinstall",
@@ -383,6 +423,14 @@ return require("packer").startup(function()
   --     -- require "plugins.icons"
   --   -- end
   -- }
+  
+  use {
+    "windwp/nvim-autopairs",
+    after = "nvim-cmp",
+    config = function()
+        require "plugins.autopairs"
+    end
+  }
 
   use {
     "nvim-lua/plenary.nvim",
