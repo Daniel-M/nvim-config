@@ -1,464 +1,695 @@
--- Turn these off at startup, will be enabled later just before loading the theme
-vim.cmd([[
-    syntax off
-    filetype off
-    filetype plugin indent off
-]])
+local cmd = vim.cmd
+local g = vim.g
+local opt = vim.opt
 
-vim.opt.ruler = false
-vim.opt.hidden = true
-vim.opt.ignorecase = false 
--- vim.opt.ignorecase = true
-vim.opt.splitbelow = true
-vim.opt.splitright = true
-vim.opt.termguicolors = true
-vim.opt.cul = true
-vim.opt.mouse = "a"
-vim.opt.signcolumn = "yes"
-vim.opt.cmdheight = 1
-vim.opt.updatetime = 250 -- update interval for gitsigns
-vim.opt.timeoutlen = 400
-vim.opt.clipboard = "unnamedplus"
+g.mapleader = " "
 
--- disable nvim intro
-vim.opt.shortmess:append("sI")
+vim.cmd [[packadd packer.nvim]]
+require('packer').startup(function(use)
+	use 'David-Kunz/jester'
+	use 'kyazdani42/nvim-web-devicons'
+	use 'lewis6991/gitsigns.nvim'
+	use 'mfussenegger/nvim-dap'
+	use 'neovim/nvim-lspconfig'
+	use 'nvim-lua/plenary.nvim'
+	use 'nvim-lua/popup.nvim'
+	use 'nvim-telescope/telescope-dap.nvim'
+	use 'nvim-telescope/telescope.nvim'
+	use 'ryanoasis/vim-devicons'
+	use 'theHamsta/nvim-dap-virtual-text'
+	use 'tpope/vim-commentary'
+	use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  -- use 'ldelossa/gh.nvim'
+  -- use 'ldelossa/litee.nvim'
+  use 'BurntSushi/ripgrep'
+  use 'David-Kunz/cmp-npm'
+  use 'David-Kunz/treesitter-unit'
+  use 'L3MON4D3/LuaSnip'
+  use 'folke/tokyonight.nvim'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/nvim-cmp'
+  use 'kyazdani42/nvim-tree.lua'
+  use 'marko-cerovac/material.nvim'
+  use 'mhartington/formatter.nvim'
+  use 'nvim-telescope/telescope-ui-select.nvim'
+  use 'saadparwaiz1/cmp_luasnip'
+  use 'voldikss/vim-floaterm'
+  use 'wbthomason/packer.nvim'
+  use 'windwp/nvim-autopairs'
+  use 'yassinebridi/vim-purpura'
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+  end
+)
 
--- disable tilde on end of buffer: https://github.com/  neovim/neovim/pull/8546#issuecomment-643643758
-vim.cmd("let &fcs='eob: '")
+  
+-- default options
+opt.completeopt = {'menu', 'menuone', 'noselect'}
+opt.laststatus = 3
+opt.mouse = 'a'
+opt.splitright = true
+opt.splitbelow = true
+opt.expandtab = true
+opt.tabstop = 2
+opt.shiftwidth = 2
+opt.number = true
+opt.ignorecase = true
+opt.smartcase = true
+opt.incsearch = true
+-- opt.relativenumber = true
+vim.cmd('set number')
+vim.cmd('set norelativenumber')
+-- set diffopt+=vertical " starts diff mode in vertical split
+opt.cmdheight = 1
+-- set shortmess+=c " don't need to press enter so often
+opt.signcolumn = 'yes'
+opt.updatetime = 520
+opt.undofile = true
+cmd('filetype plugin on')
+opt.backup = false
+g.netrw_banner = false
+g.netrw_liststyle = 3
+g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
 
--- Numbers
-vim.opt.number = true
-vim.opt.numberwidth = 2
--- vim.opt.relativenumber = true
+-- opt.path:append({ "**" })
+vim.cmd([[set path=$PWD/**]])
+vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
 
--- Indenline
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 2
-vim.opt.smartindent = true
-vim.opt.tabstop = 4
 
--- go to previous/next line with h,l,left arrow and right arrow
--- when cursor reaches end/beginning of line
-vim.opt.whichwrap:append("<>hl")
 
-vim.g.mapleader = "\\"
-vim.g.auto_save = false
+-- lewis6991/gitsigns.nvim
+function diffThisBranch()
+ local branch = vim.fn.input("Branch: ", "")
+ require"gitsigns".diffthis(branch)
+end
 
--- disable builtin vim plugins
-local disabled_built_ins = {
-    "netrw",
-    "netrwPlugin",
-    "netrwSettings",
-    "netrwFileHandlers",
-    "gzip",
-    "zip",
-    "zipPlugin",
-    "tar",
-    "tarPlugin",
-    "getscript",
-    "getscriptPlugin",
-    "vimball",
-    "vimballPlugin",
-    "2html_plugin",
-    "logipat",
-    "rrhelper",
-    "spellfile_plugin",
-    "matchit"
+require('gitsigns').setup({
+  current_line_blame = true,
+  on_attach = function(bufnr)
+       -- Navigation
+    vim.keymap.set('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
+    vim.keymap.set('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
+
+    -- Actions
+    vim.keymap.set('n', '<leader>hs', ':Gitsigns stage_hunk<CR>')
+    vim.keymap.set('v', '<leader>hs', ':Gitsigns stage_hunk<CR>')
+    vim.keymap.set('n', '<leader>hr', ':Gitsigns reset_hunk<CR>')
+    vim.keymap.set('v', '<leader>hr', ':Gitsigns reset_hunk<CR>')
+    vim.keymap.set('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>')
+    vim.keymap.set('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
+    vim.keymap.set('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
+    vim.keymap.set('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>')
+    vim.keymap.set('n', '<leader>hb', function() require"gitsigns".blame_line{full=true} end)
+    vim.keymap.set('n', '<leader>tb', '<cmd>Gitsigns toggle_current_line_blame<CR>')
+    vim.keymap.set('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>')
+    vim.keymap.set('n', '<leader>hD', function() require"gitsigns".diffthis("~") end)
+    vim.keymap.set('n', '<leader>hm', function() require"gitsigns".diffthis("main")end)
+    vim.keymap.set('n', '<leader>hM', diffThisBranch)
+    vim.keymap.set('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>')
+
+    -- Text object
+    vim.keymap.set('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    vim.keymap.set('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+  end
+})
+
+-- sbdchd/neoformat
+vim.keymap.set('n', '<leader>F', ':Format<CR>')
+require('formatter').setup({
+  logging = false,
+  filetype = {
+    javascript = {
+        -- prettierd
+       function()
+          return {
+            exe = "prettierd",
+            args = {vim.api.nvim_buf_get_name(0)},
+            stdin = true
+          }
+        end
+    },
+    rust = {
+      function()
+        return {
+          exe = "rustfmt",
+          stdin = true
+        }
+      end
+    },
+    sql = {
+        -- prettierd
+       function()
+          return {
+            exe = "sqlformat",
+            args = {vim.api.nvim_buf_get_name(0), '-a'},
+            stdin = true
+          }
+        end
+    },
+  }
+})
+local telescope_actions = require("telescope.actions.set")
+
+local fixfolds = {
+	hidden = true,
+	attach_mappings = function(_)
+		telescope_actions.select:enhance({
+			post = function()
+				vim.cmd(":normal! zx")
+			end,
+		})
+		return true
+	end,
 }
 
-for _, plugin in pairs(disabled_built_ins) do
-    vim.g["loaded_" .. plugin] = 1
+local actions = require("telescope.actions")
+
+
+require('telescope').setup {
+	pickers = {
+		buffers = fixfolds,
+		find_files = fixfolds,
+		git_files = fixfolds,
+		grep_string = fixfolds,
+		live_grep = fixfolds,
+		oldfiles = fixfolds,
+	}
+  extensions = {
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = true,  -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                                       -- the default case_mode is "smart_case"
+    }
+  }
+}
+
+-- To get fzf loaded and working with telescope, you need to call
+-- load_extension, somewhere after setup function:
+require('telescope').load_extension('fzf')
+
+-- nvim-telescope/telescope.nvim
+_G.telescope_find_files_in_path = function(path)
+ local _path = path or vim.fn.input("Dir: ", "", "dir")
+ require("telescope.builtin").find_files({search_dirs = {_path}})
+end
+_G.telescope_live_grep_in_path = function(path)
+ local _path = path or vim.fn.input("Dir: ", "", "dir")
+ require("telescope.builtin").live_grep({search_dirs = {_path}})
+end
+_G.telescope_files_or_git_files = function()
+ local utils = require('telescope.utils')
+ local builtin = require('telescope.builtin')
+ local _, ret, _ = utils.get_os_command_output({ 'git', 'rev-parse', '--is-inside-work-tree' })
+ if ret == 0 then
+   builtin.git_files()
+ else
+   builtin.find_files()
+ end
+end
+vim.keymap.set('n', '<leader>fD', function() telescope_live_grep_in_path() end)
+vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
+vim.keymap.set('n', '<leader>fd', function() telescope_find_files_in_path() end)
+vim.keymap.set('n', '<leader>ft', function() telescope_find_files_in_path("./tests") end)
+vim.keymap.set('n', '<leader>fT', function() telescope_live_grep_in_path("./tests") end)
+vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
+-- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
+vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
+vim.keymap.set('n', '<leader>fr', ':Telescope resume<CR>')
+vim.keymap.set('n', '<leader>fg', ':Telescope git_branches<CR>')
+vim.keymap.set('n', '<c-\\>', ':Telescope buffers<CR>')
+vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
+vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
+vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
+
+-- David-Kunz/cmp-npm
+require('cmp-npm').setup({ ignore = {"beta", "rc"} })
+
+-- windwp/nvim-autopairs
+local npairs = require("nvim-autopairs")
+local Rule = require('nvim-autopairs.rule')
+
+npairs.setup({
+    check_ts = true,
+    ts_config = {
+        lua = {'string'},-- it will not add a pair on that treesitter node
+        javascript = {'template_string'},
+        java = false,-- don't check treesitter on java
+    }
+})
+
+local ts_conds = require('nvim-autopairs.ts-conds')
+
+
+-- press % => %% only while inside a comment or string
+npairs.add_rules({
+  Rule("%", "%", "lua")
+    :with_pair(ts_conds.is_ts_node({'string','comment'})),
+  Rule("$", "$", "lua")
+    :with_pair(ts_conds.is_not_ts_node({'function'}))
+})
+-- end nvim-autopairs config
+
+local nvim_lsp = require'lspconfig'
+local servers = { 'tsserver', 'rust_analyzer' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  }
 end
 
-local function map(mode, lhs, rhs, opts)
-    local options = {noremap = true, silent = true}
-    if opts then
-        options = vim.tbl_extend("force", options, opts)
+vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
+vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
+vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
+vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
+vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
+vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
+vim.keymap.set('n', 'ga', function() vim.lsp.buf.code_action() end)
+vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
+ 
+-- CDS
+-- cmd([[
+-- augroup MyCDSCode
+--      autocmd!
+--      autocmd BufReadPre,FileReadPre *.cds set ft=cds
+-- augroup END
+-- ]])
+-- local lspconfig = require'lspconfig'
+-- local configs = require'lspconfig.configs'
+-- if not configs.sapcds_lsp then
+--   configs.sapcds_lsp = {
+--     default_config = {
+--       cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
+--       filetypes = {'cds'};
+--       root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
+--       settings = {};
+--     };
+--   }
+-- end
+-- if lspconfig.sapcds_lsp.setup then
+--   lspconfig.sapcds_lsp.setup{
+--     -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+--   }
+-- end
+
+vim.keymap.set('n', '<leader><esc><esc>', ':tabclose<CR>')
+
+-- vim.g.material_style = "darker"
+-- vim.cmd 'colorscheme material'
+vim.opt.fillchars = {
+  horiz     = '█',
+  horizup   = '█',
+  horizdown = '█',
+  vert      = '█',
+  vertleft  = '█',
+  vertright = '█',
+  verthoriz = '█',
+}
+vim.cmd 'colorscheme purpura'
+vim.cmd('set background=dark')
+vim.cmd('set termguicolors')
+-- vim.cmd 'colorscheme tokyonight'
+-- vim.cmd 'colorscheme gruvbox'
+-- vim.cmd 'colorscheme github_dark'
+
+
+
+vim.g.floaterm_width = 0.95
+vim.g.floaterm_height = 0.95
+vim.keymap.set('n', '<leader>g', ':FloatermNew lazygit<CR>')
+
+
+cmd('set foldmethod=expr')
+cmd('set foldexpr=nvim_treesitter#foldexpr()')
+
+vim.keymap.set('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
+
+local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+parser_config.cds = {
+      install_info = {
+            -- local path or git repo
+            url = "~/apps/tree-sitter-cds",
+            files = { "src/parser.c", "src/scanner.c" }
+      },
+      filetype = "cds",
+      -- additional filetypes that use this parser
+      used_by = { "cdl", "hdbcds" }
+    }
+
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+  },
+  -- indent = {
+  --   enable = true
+  -- },
+}
+-- mfussenegger/nvim-dap
+local dap = require('dap')
+dap.adapters.node2 = {
+  type = 'executable',
+  command = 'node',
+  args = {os.getenv('HOME') .. '/apps/node/out/src/nodeDebug.js'},
+}
+
+-- require('dap').set_log_level('INFO')
+dap.defaults.fallback.terminal_win_cmd = '20split new'
+vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
+vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})
+vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
+
+vim.keymap.set('n', '<leader>dh', function() require"dap".toggle_breakpoint() end)
+vim.keymap.set('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
+vim.keymap.set('n', '<A-k>', function() require"dap".step_out() end)
+vim.keymap.set('n', "<A-l>", function() require"dap".step_into() end)
+vim.keymap.set('n', '<A-j>', function() require"dap".step_over() end)
+vim.keymap.set('n', '<A-h>', function() require"dap".continue() end)
+vim.keymap.set('n', '<leader>dn', function() require"dap".run_to_cursor() end)
+vim.keymap.set('n', '<leader>dc', function() require"dap".terminate() end)
+vim.keymap.set('n', '<leader>dR', function() require"dap".clear_breakpoints() end)
+vim.keymap.set('n', '<leader>de', function() require"dap".set_exception_breakpoints({"all"}) end)
+vim.keymap.set('n', '<leader>da', function() require"debugHelper".attach() end)
+vim.keymap.set('n', '<leader>dA', function() require"debugHelper".attachToRemote() end)
+vim.keymap.set('n', '<leader>di', function() require"dap.ui.widgets".hover() end)
+vim.keymap.set('n', '<leader>d?', function() local widgets=require"dap.ui.widgets";widgets.centered_float(widgets.scopes) end)
+vim.keymap.set('n', '<leader>dk', ':lua require"dap".up()<CR>zz')
+vim.keymap.set('n', '<leader>dj', ':lua require"dap".down()<CR>zz')
+vim.keymap.set('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
+
+-- nvim-telescope/telescope-dap.nvim
+require('telescope').load_extension('dap')
+vim.keymap.set('n', '<leader>ds', ':Telescope dap frames<CR>')
+-- vim.keymap.set('n', '<leader>dc', ':Telescope dap commands<CR>')
+vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
+
+require('nvim-dap-virtual-text').setup()
+
+-- David-Kunz/jester
+require'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
+vim.keymap.set('n', '<leader>tt', function() require"jester".run() end)
+vim.keymap.set('n', '<leader>t_', function() require"jester".run_last() end)
+vim.keymap.set('n', '<leader>tf', function() require"jester".run_file() end)
+vim.keymap.set('n', '<leader>d_', function() require"jester".debug_last() end)
+vim.keymap.set('n', '<leader>df', function() require"jester".debug_file() end)
+vim.keymap.set('n', '<leader>dq', function() require"jester".terminate() end)
+vim.keymap.set('n', '<leader>dd', function() require"jester".debug() end)
+
+-- lua language server
+ local system_name
+ if vim.fn.has("mac") == 1 then
+   system_name = "macOS"
+ elseif vim.fn.has("unix") == 1 then
+   system_name = "Linux"
+ elseif vim.fn.has('win32') == 1 then
+   system_name = "Windows"
+ else
+   print("Unsupported system for sumneko")
+ end
+ 
+ -- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
+ local sumneko_root_path = os.getenv('HOME') ..'/apps/lua-language-server'
+ local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
+ 
+ local runtime_path = vim.split(package.path, ';')
+ table.insert(runtime_path, "lua/?.lua")
+ table.insert(runtime_path, "lua/?/init.lua")
+
+ require'lspconfig'.sumneko_lua.setup {
+   capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+   cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
+   settings = {
+     Lua = {
+       runtime = {
+         -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+         version = 'LuaJIT',
+         -- Setup your lua path
+         path = runtime_path,
+       },
+       diagnostics = {
+         -- Get the language server to recognize the `vim` global
+         globals = {'vim'},
+       },
+       workspace = {
+         -- Make the server aware of Neovim runtime files
+         library = vim.api.nvim_get_runtime_file("", true),
+       },
+       -- Do not send telemetry data containing a randomized but unique identifier
+       telemetry = {
+         enable = false,
+       },
+     },
+   },
+ }
+
+vim.keymap.set('n', '[b', ':bnext<CR>')
+vim.keymap.set('n', ']b', ':bprev<CR>')
+
+-- David-Kunz/treesitter-unit
+vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
+vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
+vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+-- require"treesitter-unit".enable_highlighting()
+
+-- local tunit = require'treesitter-unit'
+-- vim.keymap.set('x', 'iu', function() require'treesitter-unit'.select() end)
+-- vim.keymap.set('x', 'au', function() require'treesitter-unit'.select(true) end)
+-- vim.keymap.set('o', 'iu', function() require'treesitter-unit'.select() end)
+-- vim.keymap.set('o', 'au', function() require'treesitter-unit'.select(true) end)
+
+-- custom folder icon
+require'nvim-web-devicons'.setup({
+  override = {
+    lir_folder_icon = {
+      icon = "",
+      color = "#7ebae4",
+      name = "LirFolderNode"
+    },
+  }
+})
+-- use visual mode
+function _G.LirSettings()
+  vim.api.nvim_buf_set_keymap(0, 'x', 'J', ':<C-u>lua require"lir.mark.actions".toggle_mark("v")<CR>', {noremap = true, silent = true})
+
+  -- echo cwd
+  vim.api.nvim_echo({{vim.fn.expand('%:p'), 'Normal'}}, false, {})
+end
+vim.cmd [[augroup lir-settings]]
+vim.cmd [[  autocmd!]]
+vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
+vim.cmd [[augroup END]]
+
+-- global mark I for last edit
+vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
+
+-- highlight on yank
+vim.cmd([[au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}]])
+
+-- kyazdani42/nvim-tree.lua
+require('nvim-tree').setup({
+  hijack_cursor = true,
+  update_focused_file = { enable = true },
+  view = {
+    width = 60
+  }
+})
+vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
+
+vim.keymap.set('n', 'gq', ':bd!<CR>')
+vim.keymap.set('n', '<leader>w', ':w<CR>')
+
+vim.cmd('iabbrev :tup: 👍')
+vim.cmd('iabbrev :tdo: 👎')
+vim.cmd('iabbrev :smi: 😊')
+vim.cmd('iabbrev :sad: 😔')
+vim.cmd('iabbrev darkred #8b0000')
+vim.cmd('iabbrev darkgreen #006400')
+
+_G.term_buf_of_tab = _G.term_buf_of_tab or {}
+_G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
+
+function spawn_terminal()
+  local cur_tab = vim.api.nvim_get_current_tabpage()
+  vim.cmd('vs | terminal')
+  local cur_buf = vim.api.nvim_get_current_buf()
+  _G.term_buf_max_nmb = _G.term_buf_max_nmb + 1
+  vim.api.nvim_buf_set_name(cur_buf, "Terminal " .. _G.term_buf_max_nmb)
+  table.insert(_G.term_buf_of_tab, cur_tab, cur_buf)
+  vim.cmd(':startinsert')
+end
+
+function toggle_terminal()
+  local cur_tab = vim.api.nvim_get_current_tabpage()
+  local term_buf = term_buf_of_tab[cur_tab]
+  if term_buf ~= nil then
+   local cur_buf = vim.api.nvim_get_current_buf()
+   if cur_buf == term_buf then
+     vim.cmd('q')
+   else
+     vim.cmd('vert sb' .. term_buf)
+     vim.cmd(':startinsert')
+   end
+  else
+    spawn_terminal()
+    vim.cmd(':startinsert')
+  end
+end
+vim.keymap.set('n', '<c-y>', toggle_terminal)
+vim.keymap.set('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
+vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
+-- cmd([[
+-- if has('nvim')
+--    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+-- endif]])
+
+_G.send_line_to_terminal = function()
+  local curr_line = vim.api.nvim_get_current_line()
+  local cur_tab = vim.api.nvim_get_current_tabpage()
+  local term_buf = term_buf_of_tab[cur_tab]
+  if term_buf == nil then
+    spawn_terminal()
+    term_buf = term_buf_of_tab[cur_tab]
+  end
+  for _, chan in pairs(vim.api.nvim_list_chans()) do
+    if chan.buffer == term_buf then
+      chan_id = chan.id
     end
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+  end
+  vim.api.nvim_chan_send(chan_id, curr_line .. '\n')
 end
 
-local opt = {}
+vim.keymap.set('n', '<leader>x', ':lua send_line_to_terminal()<CR>')
 
--- dont copy any deleted text , this is disabled by default so uncomment the below mappings if you want them
---[[ remove this line
+require "nvim-treesitter.configs".setup {
+  playground = {
+    enable = true,
+  }
+}
 
-map("n", "dd", [=[ "_dd ]=], opt)
-map("v", "dd", [=[ "_dd ]=], opt)
-map("v", "x", [=[ "_x ]=], opt)
+vim.keymap.set('n', '<c-o>', '<c-o>zz')
+vim.keymap.set('n', '<c-i>', '<c-i>zz')
 
- this line too ]]
---
+-- 'L3MON4D3/LuaSnip'
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
 
--- escape with 'jk' mapping
-vim.api.nvim_set_keymap("i", "jk", "<esc>", {})
-vim.api.nvim_set_keymap("v", "jk", "<esc>", {})
-vim.api.nvim_set_keymap("t", "jk", "<esc>", {})
+local ls = require("luasnip")
+local cmp = require("cmp")
 
--- Don't copy the replaced text after pasting in visual mode
-map("v", "p", '"_dP', opt)
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      ls.lsp_expand(args.body)
+    end,
+  },
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if ls.expand_or_jumpable() then
+        ls.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
 
--- OPEN TERMINALS --
-map("n", "<C-l>", [[<Cmd> vnew +terminal/bin/bash | setlocal nobuflisted <CR>]], opt) -- term over right
-map("n", "<C-x>", [[<Cmd> 10new +terminal/bin/bash | setlocal nobuflisted <CR>]], opt) --  term bottom
-map("n", "<C-t>t", [[<Cmd> terminal/bin/bash <CR>]], opt) -- term buffer
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if ls.jumpable(-1) then
+        ls.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  },
+  sources = {
+    { name = 'npm' },
+    { name = 'luasnip' },
+    { name = 'nvim_lsp' },
+    { name = 'buffer', keyword_length = 5 },
+  },
+  -- formatting = {
+  --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+  -- }
+})
 
--- copy whole file content
-map("n", "<C-a>", [[ <Cmd> %y+<CR>]], opt)
-
--- toggle numbers
-map("n", "<leader>n", [[ <Cmd> set nu!<CR>]], opt)
-
--- Truezen.nvim
-map("n", "<leader>zz", ":TZAtaraxis<CR>", opt)
-map("n", "<leader>zm", ":TZMinimalist<CR>", opt)
-map("n", "<leader>zf", ":TZFocus<CR>", opt)
-
-map("n", "<C-s>", ":w <CR>", opt)
-
--- Commenter Keybinding
---map("n", "<leader>/", ":CommentToggle<CR>", opt)
---map("v", "<leader>/", ":CommentToggle<CR>", opt)
-map("n", "<C-c>", ":CommentToggle<CR>", opt)
-map("v", "<C-c>", ":CommentToggle<CR>", opt)
-
--- compe stuff
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-local check_back_space = function()
-    local col = vim.fn.col(".") - 1
-    if col == 0 or vim.fn.getline("."):sub(col, col):match("%s") then
-        return true
-    else
-        return false
-    end
+_G.expand = function ()
+  -- print("hurray!!")
+  if ls.expand_or_jumpable() then
+    return t("<Plug>luasnip-expand-or-jump")
+  end
+  return ''
 end
 
---_G.tab_complete = function()
---    if vim.fn.pumvisible() == 1 then
---        return t "<C-n>"
---    elseif check_back_space() then
---        return t "<Tab>"
---    else
---        return vim.fn["compe#complete"]()
---    end
---end
---
---_G.s_tab_complete = function()
---    if vim.fn.pumvisible() == 1 then
---        return t "<C-p>"
---    elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
---        return t "<Plug>(vsnip-jump-prev)"
---    else
---        return t "<S-Tab>"
---    end
---end
---
---function _G.completions()
---    local npairs
---    if
---        not pcall(
---            function()
---                npairs = require "nvim-autopairs"
---            end
---        )
---     then
---        return
---    end
---
---    if vim.fn.pumvisible() == 1 then
---        if vim.fn.complete_info()["selected"] ~= -1 then
---            return vim.fn["compe#confirm"]("<CR>")
---        end
---    end
---    return npairs.check_break_line_char()
---end
---
-----  compe mappings
---map("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
---map("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
---map("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
---map("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
---map("i", "<CR>", "v:lua.completions()", {expr = true})
+_G.expand_back = function ()
+  -- print("hurray!!")
+  if ls.jumpable(-1) then
+    return t("<Plug>luasnip-jump-prev")
+  end
+  return ''
+end
 
--- nvimtree
---map("n", "<C-n>", ":NvimTreeToggle<CR>", opt)
-map("n", "<leader>et", ":NvimTreeToggle<CR>", opt)
+vim.api.nvim_set_keymap('i', '<c-j>', 'v:lua.expand()', { expr = true })
+vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', { expr = true })
+vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', { expr = true })
+vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
 
--- format code
-map("n", "<leader>fm", [[<Cmd> Neoformat<CR>]], opt)
+vim.keymap.set('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
 
--- dashboard stuff
-map("n", "<Leader>fw", [[<Cmd> Telescope live_grep<CR>]], opt)
-map("n", "<Leader>db", [[<Cmd> Dashboard<CR>]], opt)
-map("n", "<Leader>fn", [[<Cmd> DashboardNewFile<CR>]], opt)
-map("n", "<Leader>bm", [[<Cmd> DashboardJumpMarks<CR>]], opt)
-map("n", "<C-s>l", [[<Cmd> SessionLoad<CR>]], opt)
-map("n", "<C-s>s", [[<Cmd> SessionSave<CR>]], opt)
-
--- Telescope
-map("n", "<Leader>gt", [[<Cmd> Telescope git_status <CR>]], opt)
-map("n", "<Leader>cm", [[<Cmd> Telescope git_commits <CR>]], opt)
-map("n", "<Leader>ff", [[<Cmd> Telescope find_files <CR>]], opt)
-map("n", "<Leader>fp", [[<Cmd>lua require('telescope').extensions.media_files.media_files()<CR>]], opt)
-map("n", "<Leader>fb", [[<Cmd>Telescope buffers<CR>]], opt)
-map("n", "<Leader>fh", [[<Cmd>Telescope help_tags<CR>]], opt)
-map("n", "<Leader>fo", [[<Cmd>Telescope oldfiles<CR>]], opt)
-
--- bufferline tab stuff
-map("n", "<S-t>", ":enew<CR>", opt) -- new buffer
-map("n", "<C-t>b", ":tabnew<CR>", opt) -- new tab
-map("n", "<S-x>", ":bd!<CR>", opt) -- close tab
-
--- move between tabs
-map("n", "<TAB>", [[<Cmd>BufferLineCycleNext<CR>]], opt)
-map("n", "<S-TAB>", [[<Cmd>BufferLineCyclePrev<CR>]], opt)
-
--- use ESC to turn off search highlighting
-map("n", "<Esc>", ":noh<CR>", opt)
-
--- get out of terminal with jk
-map("t", "jk", "<C-\\><C-n>", opt)
+_G.test_dap = function()
+  local dap = require'dap'
+  -- dap.terminate(nil, nil, function()
+  --   vim.wait(2000, function()
+  --     local session = dap.session()
+  --     return session and session.initialized
+  --   end)
+    dap.run({
+      args = { "--no-cache" },
+      console = "integratedTerminal",
+      cwd = "/Users/d065023/projects/DevOnDuty/VimAsIDE",
+      disableOptimisticBPs = true,
+      port = 9229,
+      protocol = "inspector",
+      request = "launch",
+      runtimeArgs = { "--inspect-brk", "foo.js" },
+      -- skipFiles = { "file:///<node_internals>/**/*.js" },
+      skipFiles = { "promiseInitHookWithDestroyTracking" },
+      sourceMaps = "inline",
+      type = "node2"
+      })
+    -- end)
+end
 
 
--- Highlight on yank
---local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
---vim.api.nvim_create_autocmd('TextYankPost', {
---  callback = function()
---    vim.highlight.on_yank()
---  end,
---  group = highlight_group,
---  pattern = '*',
---})
-
--- This file can be loaded by calling `lua require("plugins")` from your init.vim
-
--- Only required if you have packer configured as `opt`
-vim.cmd [[packadd packer.nvim]]
-
-vim.cmd [[colorscheme purpura]]
-
-return require("packer").startup(function()
-  -- Packer can manage itself
-  use "wbthomason/packer.nvim"
-
-  -- Load on a combination of conditions: specific filetypes or commands
-  -- Also run code after load (see the "config" key)
-  use {
-    "dense-analysis/ale",
-    ft = {
-            "sh",
-            "zsh",
-            "bash",
-            "c",
-            "cpp",
-            "cmake",
-            "html",
-            "markdown",
-            "racket",
-            "vim",
-            "tex",
-            "lua",
-    },
-    cmd = "ALEEnable",
-    config = "vim.cmd[[ALEEnable]]"
-  }
-
-  use {
-      "williamboman/nvim-lsp-installer",
-  }
-
-  use {
-      "neovim/nvim-lspconfig",
-      -- after = "nvim-lspinstall",
-      -- after = "nvim-lsp-installer",
-      config = function()
-          require "plugins.lspconfig"
-      end
-  }
-
-  use {
-      "onsails/lspkind-nvim",
-      event = "BufRead",
-      config = function()
-        local present, lspkind = pcall(require, "lspkind")
-        if present then
-        lspkind.init()
-        end
-      end
-  }
+-- ldelossa/gh.nvim
+-- require('litee.lib').setup()
+-- require('litee.gh').setup({
+--   prefer_https_remote = true
+-- })
 
 
-  -- Plugins can have dependencies on other plugins
-  use {
-    "hrsh7th/nvim-cmp",
-    -- event = "InsertEnter",
-    config = function()
-        require "plugins.cmp"
-    end,
-    --opt = true,
-    -- requires = {{"hrsh7th/vim-vsnip"}, {"hrsh7th/vim-vsnip-integ"}}
-    requires = {
-      {"saadparwaiz1/cmp_luasnip"},
-      {"L3MON4D3/LuaSnip"},
-      {"rafamadriz/friendly-snippets"},
-    }
-  }
+-- nvim-telescope/telescope-ui-select.nvim
+require("telescope").load_extension("ui-select")
 
-  use {"hrsh7th/cmp-nvim-lsp"}
-  use {"hrsh7th/cmp-buffer"}
-  use {"hrsh7th/cmp-path"}
-  use {"hrsh7th/cmp-cmdline"}
+-- require("github-theme").setup({
+--   theme_style = "dark",
+-- })
 
-  -- use {"saadparwaiz1/cmp_luasnip"}
-  -- use {"L3MON4D3/LuaSnip"}
-  -- use {"rafamadriz/friendly-snippets"}
-
-  -- Post-install/update hook with neovim command
-  use { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" , config = function() require "plugins.treesitter" end }
-  
-  use { "nvim-treesitter/nvim-treesitter-textobjects" }
-
-  -- Post-install/update hook with call of vimscript function with argument
-  -- use { "glacambre/firenvim", run = function() vim.fn["firenvim#install"](0) end }
-
-  -- Use specific branch, dependency and run lua file after load
-  -- use {
-  --   "glepnir/galaxyline.nvim",
-  --   branch = "main", 
-  --   -- config = function() require"statusline" end,
-  --   requires = {"kyazdani42/nvim-web-devicons"}
-  -- }
-
-  use { "vim-airline/vim-airline" }
-  use { "vim-airline/vim-airline-themes" }
-
-  -- Use dependency and run lua function after load
-  use {
-    "lewis6991/gitsigns.nvim", requires = { "nvim-lua/plenary.nvim" },
-    config = function() require("gitsigns").setup() end
-  }
-
-  -- You can specify multiple plugins in a single call
-  use {"tjdevries/colorbuddy.vim"}
-
-  -- You can alias plugin names
-  use {"dracula/vim", as = "dracula"}
-
-  use {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "BufRead",
-    setup = function()
-        -- require "plugins.blankline"
-        local ok, res = xpcall(require, debug.traceback, "plugins.blankline")
-        if not (ok) then
-          print("Error loading blankline")
-        end
-    end 
-  }
-
-  use {
-    "yassinebridi/vim-purpura",
-    after = "packer.nvim",
-    config = function()
-       vim.cmd([[
-         syntax on
-         filetype on
-         filetype plugin indent on
-       ]]) 
-    end
-  }
-
-  use {
-    "wadackel/vim-dogrun"
-  }
-
-  use {
-    "whatyouhide/vim-gotham"
-  }
-
-  use {
-    "cocopon/iceberg.vim"
-  }
-
-  use {
-    "arcticicestudio/nord-vim"
-  }
-
-  use {
-    "mhartington/oceanic-next"
-  }
-
-  -- use {
-  --     "kabouzeid/nvim-lspinstall",
-  --     event = "BufRead"
-  -- }
-
-  use {
-    "terrortylor/nvim-comment",
-    cmd = "CommentToggle",
-    config = function()
-	    local present, nvim_comment = pcall(require, "nvim_comment")
-    if present then
-        nvim_comment.setup()
-    end
-    end
-  }
-  
-  use {
-    'kyazdani42/nvim-tree.lua',
-    requires = {
-      'kyazdani42/nvim-web-devicons', -- optional, for file icon
-    },
-    config = function() require'nvim-tree'.setup {} end
-  }
-
-
-  -- use {
-  --   "kyazdani42/nvim-web-devicons",
-  --   -- after = "nvim-base16.lua",
-  --   -- config = function()
-  --     -- require "plugins.icons"
-  --   -- end
-  -- }
-  
-  use {
-    "windwp/nvim-autopairs",
-    after = "nvim-cmp",
-    config = function()
-        require "plugins.autopairs"
-    end
-  }
-
-  use {
-    "nvim-lua/plenary.nvim",
-    event = "BufRead"
-  }
-
-  use {
-    "nvim-lua/popup.nvim",
-    after = "plenary.nvim"
-  }
-
-  use {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    config = function()
-      require "plugins.telescope"
-    end
-  }
-
-  use {
-    "nvim-telescope/telescope-fzf-native.nvim",
-    run = "make",
-    cmd = "Telescope"
-  }
-
-  use {
-    "nvim-telescope/telescope-media-files.nvim",
-    cmd = "Telescope"
-  }
-end)
-
+vim.keymap.set('i', '<c-o>', '<esc><s-o>')
+vim.keymap.set('n', '<leader>p', ':PackerSync<CR>')
+-- vim.api.nvim_create_autocmd('BufHidden',  {
+--     pattern  = '[dap-terminal]*',
+--     callback = function(arg)
+--       vim.schedule(function() vim.api.nvim_buf_delete(arg.buf, { force = true }) end)
+--     end
+-- })
