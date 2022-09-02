@@ -116,40 +116,77 @@ require('gitsigns').setup({
 -- mhartington/formatter.nvim 
 vim.keymap.set('n', '<leader>F', ':Format<CR>')
 require('formatter').setup({
-  logging = false,
+  -- Enable or disable logging
+  logging = true,
+  -- Set the log level
+  log_level = vim.log.levels.WARN,
+  -- All formatter configurations a
   filetype = {
-    javascript = {
-        -- prettierd
-       function()
-          return {
-            exe = "prettierd",
-            args = {vim.api.nvim_buf_get_name(0)},
-            stdin = true
-          }
-          -- return {
-          --   exe = "js-beautify",
-          --   stdin = true,
-          --   try_node_modules = true,
-          -- }
-        end
+    lua = {
+      -- "formatter.filetypes.lua" defines default configurations for the
+      -- "lua" filetype
+      require("formatter.filetypes.lua").stylua,
     },
-    rust = {
+    javascript = {
       function()
         return {
-          exe = "rustfmt",
-          stdin = true
+          exe = "./node_modules/.bin/prettier",
+          args = {"--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi"},
+          stdin = true,
         }
-      end
+      end,
+
+      function()
+        return {
+          exe = "./node_modules/.bin/eslint",
+          args = {"--stdin", "--stdin-filename", vim.fn.shellescape(vim.api.nvim_buf_get_name(0))},
+          stdin = true,
+        }
+      end,
+      -- require("formatter.filetypes.javascript").prettier,
+        -- -- prettierd
+       -- function()
+        --   return {
+        --     exe = "prettierd",
+        --     args = {vim.api.nvim_buf_get_name(0)},
+        --     stdin = true
+        --   }
+        --   -- return {
+        --   --   exe = "js-beautify",
+        --   --   stdin = true,
+        --   --   try_node_modules = true,
+        --   -- }
+        -- end
     },
-    sql = {
-       function()
-          return {
-            exe = "sqlformat",
-            args = {vim.api.nvim_buf_get_name(0), '-a'},
-            stdin = true
-          }
-        end
+    graphql = {
+      require("formatter.filetypes.graphql").prettier,
     },
+    gql = {
+      require("formatter.filetypes.graphql").prettier,
+    },
+    go = {
+      require("formatter.filetypes.go").gofmt,
+    },
+    python = {
+      require("formatter.filetypes.python").autopep8,
+    },
+    -- rust = {
+    --   function()
+    --     return {
+    --       exe = "rustfmt",
+    --       stdin = true
+    --     }
+    --   end
+    -- },
+    -- sql = {
+    --    function()
+    --       return {
+    --         exe = "sqlformat",
+    --         args = {vim.api.nvim_buf_get_name(0), '-a'},
+    --         stdin = true
+    --       }
+    --     end
+    -- },
     -- Use the special "*" filetype for defining formatter configurations on
     -- any filetype
     ["*"] = {
