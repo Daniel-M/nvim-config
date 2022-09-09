@@ -6,44 +6,47 @@ g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
-	use 'David-Kunz/jester'
-	use 'kyazdani42/nvim-web-devicons'
-	use 'lewis6991/gitsigns.nvim'
-	use 'mfussenegger/nvim-dap'
-	use 'neovim/nvim-lspconfig'
-	use 'nvim-lua/plenary.nvim'
-	use 'nvim-lua/popup.nvim'
-	use 'nvim-telescope/telescope-dap.nvim'
-	use 'nvim-telescope/telescope.nvim'
-	use 'ryanoasis/vim-devicons'
-	use 'theHamsta/nvim-dap-virtual-text'
-	use 'tpope/vim-commentary'
-	use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  -- use 'ldelossa/gh.nvim'
-  -- use 'ldelossa/litee.nvim'
   use 'David-Kunz/cmp-npm'
+  use 'David-Kunz/jester'
   use 'David-Kunz/treesitter-unit'
   use 'L3MON4D3/LuaSnip'
+  use 'Mofiqul/dracula.nvim'
   use 'folke/tokyonight.nvim'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/nvim-cmp'
   use 'kyazdani42/nvim-tree.lua'
+  use 'kyazdani42/nvim-web-devicons'
+  use 'lewis6991/gitsigns.nvim'
   use 'marko-cerovac/material.nvim'
+  use 'mfussenegger/nvim-dap'
   use 'mhartington/formatter.nvim'
+  use 'neovim/nvim-lspconfig'
+  use 'nvim-lua/plenary.nvim'
+  use 'nvim-lua/popup.nvim'
   use 'nvim-lualine/lualine.nvim'
+  use 'nvim-telescope/telescope-dap.nvim'
   use 'nvim-telescope/telescope-ui-select.nvim'
+  use 'nvim-telescope/telescope.nvim'
   use 'rafamadriz/friendly-snippets'
+  use 'ray-x/go.nvim'
+  use 'ray-x/guihua.lua'
+  use 'ryanoasis/vim-devicons'
   use 'saadparwaiz1/cmp_luasnip'
+  use 'theHamsta/nvim-dap-virtual-text'
+  use 'tpope/vim-commentary'
   use 'voldikss/vim-floaterm'
   use 'wbthomason/packer.nvim'
+  use 'williamboman/mason-lspconfig.nvim'
+  use 'williamboman/mason.nvim'
   use 'windwp/nvim-autopairs'
   use 'yassinebridi/vim-purpura'
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
   end
 )
 
-  
+
 -- default options
 opt.completeopt = {'menu', 'menuone', 'noselect'}
 opt.laststatus = 3
@@ -59,6 +62,7 @@ opt.smartcase = true
 opt.incsearch = true
 -- opt.relativenumber = true
 vim.cmd('set number')
+vim.cmd('set noignorecase')
 vim.cmd('set norelativenumber')
 -- set diffopt+=vertical " starts diff mode in vertical split
 opt.cmdheight = 1
@@ -114,7 +118,7 @@ require('gitsigns').setup({
   end
 })
 
--- mhartington/formatter.nvim 
+-- mhartington/formatter.nvim
 vim.keymap.set('n', '<leader>F', ':Format<CR>')
 require('formatter').setup({
   -- Enable or disable logging
@@ -144,23 +148,16 @@ require('formatter').setup({
           stdin = true,
         }
       end,
-      -- require("formatter.filetypes.javascript").prettier,
-        -- -- prettierd
-       -- function()
-        --   return {
-        --     exe = "prettierd",
-        --     args = {vim.api.nvim_buf_get_name(0)},
-        --     stdin = true
-        --   }
-        --   -- return {
-        --   --   exe = "js-beautify",
-        --   --   stdin = true,
-        --   --   try_node_modules = true,
-        --   -- }
-        -- end
     },
     graphql = {
-      require("formatter.filetypes.graphql").prettier,
+      -- require("formatter.filetypes.graphql").prettier,
+      function()
+        return {
+          exe = "./node_modules/.bin/prettier",
+          args = {"--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi"},
+          stdin = true,
+        }
+      end
     },
     gql = {
       require("formatter.filetypes.graphql").prettier,
@@ -200,37 +197,38 @@ require('formatter').setup({
 local telescope_actions = require("telescope.actions.set")
 
 local fixfolds = {
-	hidden = true,
-	attach_mappings = function(_)
-		telescope_actions.select:enhance({
-			post = function()
-				vim.cmd(":normal! zx")
-			end,
-		})
-		return true
-	end,
+  hidden = true,
+  attach_mappings = function(_)
+    telescope_actions.select:enhance({
+      post = function()
+        vim.cmd(":normal! zx")
+      end,
+    })
+    return true
+  end,
 }
 
 local actions = require("telescope.actions")
 
 
 require('telescope').setup {
-	pickers = {
-		buffers = fixfolds,
-		find_files = fixfolds,
-		git_files = fixfolds,
-		grep_string = fixfolds,
-		live_grep = fixfolds,
-		oldfiles = fixfolds,
-	},
-	extensions = {
-	  fzf = {
-	    fuzzy = true,                    -- false will only do exact matching
-	    override_generic_sorter = true,  -- override the generic sorter
-	    override_file_sorter = true,     -- override the file sorter
-	    case_mode = "smart_case",        -- or "ignore_case" or "respect_case" the default case_mode is "smart_case"
-	  }
-	}
+  defaults = { file_ignore_patterns = {"node_modules"} },
+  pickers = {
+    buffers = fixfolds,
+    find_files = fixfolds,
+    git_files = fixfolds,
+    grep_string = fixfolds,
+    live_grep = fixfolds,
+    oldfiles = fixfolds,
+  },
+  extensions = {
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = true,  -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = "smart_case",        -- or "ignore_case" or "respect_case" the default case_mode is "smart_case"
+    }
+  }
 }
 
 -- To get fzf loaded and working with telescope, you need to call
@@ -299,8 +297,11 @@ npairs.add_rules({
 })
 -- end nvim-autopairs config
 
+require("mason").setup()
+require("mason-lspconfig").setup()
+
 local nvim_lsp = require'lspconfig'
-local servers = { 'tsserver', 'rust_analyzer' }
+local servers = { 'tsserver', 'rust_analyzer', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint'}
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -315,7 +316,7 @@ vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
 vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
 vim.keymap.set('n', 'ga', function() vim.lsp.buf.code_action() end)
 vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
- 
+
 -- CDS
 -- cmd([[
 -- augroup MyCDSCode
@@ -354,7 +355,8 @@ vim.opt.fillchars = {
   vertright = '█',
   verthoriz = '█',
 }
-vim.cmd 'colorscheme purpura'
+-- vim.cmd('colorscheme purpura')
+vim.cmd('colorscheme dracula')
 vim.cmd('set background=dark')
 vim.cmd('set termguicolors')
 -- vim.cmd 'colorscheme tokyonight'
@@ -454,11 +456,11 @@ vim.keymap.set('n', '<leader>dd', function() require"jester".debug() end)
  else
    print("Unsupported system for sumneko")
  end
- 
+
  -- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
  local sumneko_root_path = os.getenv('HOME') ..'/apps/lua-language-server'
  local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
- 
+
  local runtime_path = vim.split(package.path, ';')
  table.insert(runtime_path, "lua/?.lua")
  table.insert(runtime_path, "lua/?/init.lua")
@@ -634,6 +636,7 @@ cmp.setup({
       ls.lsp_expand(args.body)
     end,
   },
+
   mapping = {
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
@@ -657,17 +660,17 @@ cmp.setup({
       end
     end, { "i", "s" }),
   },
+
   sources = {
     { name = 'npm' },
-    { name = 'luasnip' },
     { name = 'nvim_lsp' },
+    { name = 'luasnip' },
     { name = 'buffer', keyword_length = 5 },
   },
   -- formatting = {
   --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
   -- }
 })
-
 
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -721,6 +724,7 @@ _G.test_dap = function()
 end
 
 -- lualine
+
 require('lualine').setup {
   options = {
     icons_enabled = true,
@@ -768,6 +772,14 @@ require('lualine').setup {
 --   prefer_https_remote = true
 -- })
 
+-- go.nvim
+require('go').setup({
+  lsp_cfg = {
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  },
+})
+-- require("go.format").gofmt()  -- gofmt only
+-- require("go.format").goimport()  -- goimport + gofmt
 
 -- nvim-telescope/telescope-ui-select.nvim
 require("telescope").load_extension("ui-select")
