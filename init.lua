@@ -30,7 +30,8 @@ require('packer').startup(function(use)
   use 'nvim-telescope/telescope.nvim'
   use 'rafamadriz/friendly-snippets'
   use 'ray-x/go.nvim'
-  use 'ray-x/guihua.lua'
+  use { 'ray-x/guihua.lua', run = 'cd lua/fzy && make' }
+  use 'ray-x/navigator.lua'
   use 'ryanoasis/vim-devicons'
   use 'saadparwaiz1/cmp_luasnip'
   use 'theHamsta/nvim-dap-virtual-text'
@@ -42,13 +43,14 @@ require('packer').startup(function(use)
   use 'windwp/nvim-autopairs'
   use 'yassinebridi/vim-purpura'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-  end
+  use { 'nvim-telescope/telescope-fzf-native.nvim',
+    run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+end
 )
 
 
 -- default options
-opt.completeopt = {'menu', 'menuone', 'noselect'}
+opt.completeopt = { 'menu', 'menuone', 'noselect' }
 opt.laststatus = 3
 opt.mouse = 'a'
 opt.splitright = true
@@ -80,20 +82,27 @@ g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript'
 vim.cmd([[set path=$PWD/**]])
 vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
 
-
+require("mason").setup()
+require("mason-lspconfig").setup()
+require("navigator").setup({
+  mason = true,
+  lsp = {
+    disable_lsp = { 'flow' }, -- enabling flow breaks navigator with mason
+  }
+})
 
 -- lewis6991/gitsigns.nvim
 function diffThisBranch()
- local branch = vim.fn.input("Branch: ", "")
- require"gitsigns".diffthis(branch)
+  local branch = vim.fn.input("Branch: ", "")
+  require "gitsigns".diffthis(branch)
 end
 
 require('gitsigns').setup({
   current_line_blame = true,
   on_attach = function(bufnr)
-       -- Navigation
-    vim.keymap.set('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
-    vim.keymap.set('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
+    -- Navigation
+    vim.keymap.set('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", { expr = true })
+    vim.keymap.set('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", { expr = true })
 
     -- Actions
     vim.keymap.set('n', '<leader>hs', ':Gitsigns stage_hunk<CR>')
@@ -104,11 +113,11 @@ require('gitsigns').setup({
     vim.keymap.set('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
     vim.keymap.set('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
     vim.keymap.set('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>')
-    vim.keymap.set('n', '<leader>hb', function() require"gitsigns".blame_line{full=true} end)
+    vim.keymap.set('n', '<leader>hb', function() require "gitsigns".blame_line { full = true } end)
     vim.keymap.set('n', '<leader>tb', '<cmd>Gitsigns toggle_current_line_blame<CR>')
     vim.keymap.set('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>')
-    vim.keymap.set('n', '<leader>hD', function() require"gitsigns".diffthis("~") end)
-    vim.keymap.set('n', '<leader>hm', function() require"gitsigns".diffthis("main")end)
+    vim.keymap.set('n', '<leader>hD', function() require "gitsigns".diffthis("~") end)
+    vim.keymap.set('n', '<leader>hm', function() require "gitsigns".diffthis("main") end)
     vim.keymap.set('n', '<leader>hM', diffThisBranch)
     vim.keymap.set('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>')
 
@@ -136,7 +145,7 @@ require('formatter').setup({
       function()
         return {
           exe = "./node_modules/.bin/prettier",
-          args = {"--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi"},
+          args = { "--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi" },
           stdin = true,
         }
       end,
@@ -144,7 +153,7 @@ require('formatter').setup({
       function()
         return {
           exe = "./node_modules/.bin/eslint",
-          args = {"--stdin", "--stdin-filename", vim.fn.shellescape(vim.api.nvim_buf_get_name(0))},
+          args = { "--stdin", "--stdin-filename", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)) },
           stdin = true,
         }
       end,
@@ -154,7 +163,7 @@ require('formatter').setup({
       function()
         return {
           exe = "./node_modules/.bin/prettier",
-          args = {"--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi"},
+          args = { "--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi" },
           stdin = true,
         }
       end
@@ -212,7 +221,7 @@ local actions = require("telescope.actions")
 
 
 require('telescope').setup {
-  defaults = { file_ignore_patterns = {"node_modules"} },
+  defaults = { file_ignore_patterns = { "node_modules" } },
   pickers = {
     buffers = fixfolds,
     find_files = fixfolds,
@@ -223,10 +232,10 @@ require('telescope').setup {
   },
   extensions = {
     fzf = {
-      fuzzy = true,                    -- false will only do exact matching
-      override_generic_sorter = true,  -- override the generic sorter
-      override_file_sorter = true,     -- override the file sorter
-      case_mode = "smart_case",        -- or "ignore_case" or "respect_case" the default case_mode is "smart_case"
+      fuzzy = true, -- false will only do exact matching
+      override_generic_sorter = true, -- override the generic sorter
+      override_file_sorter = true, -- override the file sorter
+      case_mode = "smart_case", -- or "ignore_case" or "respect_case" the default case_mode is "smart_case"
     }
   }
 }
@@ -237,29 +246,29 @@ require('telescope').load_extension('fzf')
 
 -- nvim-telescope/telescope.nvim
 _G.telescope_find_files_in_path = function(path)
- local _path = path or vim.fn.input("Dir: ", "", "dir")
- require("telescope.builtin").find_files({search_dirs = {_path}})
+  local _path = path or vim.fn.input("Dir: ", "", "dir")
+  require("telescope.builtin").find_files({ search_dirs = { _path } })
 end
 _G.telescope_live_grep_in_path = function(path)
- local _path = path or vim.fn.input("Dir: ", "", "dir")
- require("telescope.builtin").live_grep({search_dirs = {_path}})
+  local _path = path or vim.fn.input("Dir: ", "", "dir")
+  require("telescope.builtin").live_grep({ search_dirs = { _path } })
 end
 _G.telescope_files_or_git_files = function()
- local utils = require('telescope.utils')
- local builtin = require('telescope.builtin')
- local _, ret, _ = utils.get_os_command_output({ 'git', 'rev-parse', '--is-inside-work-tree' })
- if ret == 0 then
-   builtin.git_files()
- else
-   builtin.find_files()
- end
+  local utils = require('telescope.utils')
+  local builtin = require('telescope.builtin')
+  local _, ret, _ = utils.get_os_command_output({ 'git', 'rev-parse', '--is-inside-work-tree' })
+  if ret == 0 then
+    builtin.git_files()
+  else
+    builtin.find_files()
+  end
 end
 vim.keymap.set('n', '<leader>fD', function() telescope_live_grep_in_path() end)
 vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
 vim.keymap.set('n', '<leader>fd', function() telescope_find_files_in_path() end)
 vim.keymap.set('n', '<leader>ft', function() telescope_find_files_in_path("./tests") end)
 vim.keymap.set('n', '<leader>fT', function() telescope_live_grep_in_path("./tests") end)
-vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
+-- vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 -- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
 vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fr', ':Telescope resume<CR>')
@@ -270,19 +279,20 @@ vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 -- David-Kunz/cmp-npm
-require('cmp-npm').setup({ ignore = {"beta", "rc"} })
+require('cmp-npm').setup({ ignore = { "beta", "rc" } })
 
 -- windwp/nvim-autopairs
 local npairs = require("nvim-autopairs")
 local Rule = require('nvim-autopairs.rule')
 
 npairs.setup({
-    check_ts = true,
-    ts_config = {
-        lua = {'string'},-- it will not add a pair on that treesitter node
-        javascript = {'template_string'},
-        java = false,-- don't check treesitter on java
-    }
+  check_ts = true,
+  ts_config = {
+    lua = { 'string' }, -- it will not add a pair on that treesitter node
+    javascript = { 'template_string' },
+    java = false, -- don't check treesitter on java
+  },
+  disable_filetype = { "TelescopePrompt", "guihua", "guihua_rust", "clap_input" },
 })
 
 local ts_conds = require('nvim-autopairs.ts-conds')
@@ -291,17 +301,14 @@ local ts_conds = require('nvim-autopairs.ts-conds')
 -- press % => %% only while inside a comment or string
 npairs.add_rules({
   Rule("%", "%", "lua")
-    :with_pair(ts_conds.is_ts_node({'string','comment'})),
+      :with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
   Rule("$", "$", "lua")
-    :with_pair(ts_conds.is_not_ts_node({'function'}))
+      :with_pair(ts_conds.is_not_ts_node({ 'function' }))
 })
 -- end nvim-autopairs config
 
-require("mason").setup()
-require("mason-lspconfig").setup()
-
-local nvim_lsp = require'lspconfig'
-local servers = { 'tsserver', 'rust_analyzer', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint'}
+local nvim_lsp = require 'lspconfig'
+local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -355,8 +362,8 @@ vim.opt.fillchars = {
   vertright = '█',
   verthoriz = '█',
 }
--- vim.cmd('colorscheme purpura')
-vim.cmd('colorscheme dracula')
+vim.cmd('colorscheme purpura')
+-- vim.cmd('colorscheme dracula')
 vim.cmd('set background=dark')
 vim.cmd('set termguicolors')
 -- vim.cmd 'colorscheme tokyonight'
@@ -377,17 +384,17 @@ vim.keymap.set('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
 
 local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
 parser_config.cds = {
-      install_info = {
-            -- local path or git repo
-            url = "~/apps/tree-sitter-cds",
-            files = { "src/parser.c", "src/scanner.c" }
-      },
-      filetype = "cds",
-      -- additional filetypes that use this parser
-      used_by = { "cdl", "hdbcds" }
-    }
+  install_info = {
+    -- local path or git repo
+    url = "~/apps/tree-sitter-cds",
+    files = { "src/parser.c", "src/scanner.c" }
+  },
+  filetype = "cds",
+  -- additional filetypes that use this parser
+  used_by = { "cdl", "hdbcds" }
+}
 
-require'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
   },
@@ -400,29 +407,30 @@ local dap = require('dap')
 dap.adapters.node2 = {
   type = 'executable',
   command = 'node',
-  args = {os.getenv('HOME') .. '/apps/node/out/src/nodeDebug.js'},
+  args = { os.getenv('HOME') .. '/apps/node/out/src/nodeDebug.js' },
 }
 
 -- require('dap').set_log_level('INFO')
 dap.defaults.fallback.terminal_win_cmd = '20split new'
-vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
-vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})
-vim.fn.sign_define('DapStopped', {text='⭐️', texthl='', linehl='', numhl=''})
+vim.fn.sign_define('DapBreakpoint', { text = '🟥', texthl = '', linehl = '', numhl = '' })
+vim.fn.sign_define('DapBreakpointRejected', { text = '🟦', texthl = '', linehl = '', numhl = '' })
+vim.fn.sign_define('DapStopped', { text = '⭐️', texthl = '', linehl = '', numhl = '' })
 
-vim.keymap.set('n', '<leader>dh', function() require"dap".toggle_breakpoint() end)
+vim.keymap.set('n', '<leader>dh', function() require "dap".toggle_breakpoint() end)
 vim.keymap.set('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
-vim.keymap.set('n', '<A-k>', function() require"dap".step_out() end)
-vim.keymap.set('n', "<A-l>", function() require"dap".step_into() end)
-vim.keymap.set('n', '<A-j>', function() require"dap".step_over() end)
-vim.keymap.set('n', '<A-h>', function() require"dap".continue() end)
-vim.keymap.set('n', '<leader>dn', function() require"dap".run_to_cursor() end)
-vim.keymap.set('n', '<leader>dc', function() require"dap".terminate() end)
-vim.keymap.set('n', '<leader>dR', function() require"dap".clear_breakpoints() end)
-vim.keymap.set('n', '<leader>de', function() require"dap".set_exception_breakpoints({"all"}) end)
-vim.keymap.set('n', '<leader>da', function() require"debugHelper".attach() end)
-vim.keymap.set('n', '<leader>dA', function() require"debugHelper".attachToRemote() end)
-vim.keymap.set('n', '<leader>di', function() require"dap.ui.widgets".hover() end)
-vim.keymap.set('n', '<leader>d?', function() local widgets=require"dap.ui.widgets";widgets.centered_float(widgets.scopes) end)
+vim.keymap.set('n', '<A-k>', function() require "dap".step_out() end)
+vim.keymap.set('n', "<A-l>", function() require "dap".step_into() end)
+vim.keymap.set('n', '<A-j>', function() require "dap".step_over() end)
+vim.keymap.set('n', '<A-h>', function() require "dap".continue() end)
+vim.keymap.set('n', '<leader>dn', function() require "dap".run_to_cursor() end)
+vim.keymap.set('n', '<leader>dc', function() require "dap".terminate() end)
+vim.keymap.set('n', '<leader>dR', function() require "dap".clear_breakpoints() end)
+vim.keymap.set('n', '<leader>de', function() require "dap".set_exception_breakpoints({ "all" }) end)
+vim.keymap.set('n', '<leader>da', function() require "debugHelper".attach() end)
+vim.keymap.set('n', '<leader>dA', function() require "debugHelper".attachToRemote() end)
+vim.keymap.set('n', '<leader>di', function() require "dap.ui.widgets".hover() end)
+vim.keymap.set('n', '<leader>d?',
+  function() local widgets = require "dap.ui.widgets"; widgets.centered_float(widgets.scopes) end)
 vim.keymap.set('n', '<leader>dk', ':lua require"dap".up()<CR>zz')
 vim.keymap.set('n', '<leader>dj', ':lua require"dap".down()<CR>zz')
 vim.keymap.set('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
@@ -436,61 +444,61 @@ vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 require('nvim-dap-virtual-text').setup()
 
 -- David-Kunz/jester
-require'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
-vim.keymap.set('n', '<leader>tt', function() require"jester".run() end)
-vim.keymap.set('n', '<leader>t_', function() require"jester".run_last() end)
-vim.keymap.set('n', '<leader>tf', function() require"jester".run_file() end)
-vim.keymap.set('n', '<leader>d_', function() require"jester".debug_last() end)
-vim.keymap.set('n', '<leader>df', function() require"jester".debug_file() end)
-vim.keymap.set('n', '<leader>dq', function() require"jester".terminate() end)
-vim.keymap.set('n', '<leader>dd', function() require"jester".debug() end)
+require 'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
+vim.keymap.set('n', '<leader>tt', function() require "jester".run() end)
+vim.keymap.set('n', '<leader>t_', function() require "jester".run_last() end)
+vim.keymap.set('n', '<leader>tf', function() require "jester".run_file() end)
+vim.keymap.set('n', '<leader>d_', function() require "jester".debug_last() end)
+vim.keymap.set('n', '<leader>df', function() require "jester".debug_file() end)
+vim.keymap.set('n', '<leader>dq', function() require "jester".terminate() end)
+vim.keymap.set('n', '<leader>dd', function() require "jester".debug() end)
 
 -- lua language server
- local system_name
- if vim.fn.has("mac") == 1 then
-   system_name = "macOS"
- elseif vim.fn.has("unix") == 1 then
-   system_name = "Linux"
- elseif vim.fn.has('win32') == 1 then
-   system_name = "Windows"
- else
-   print("Unsupported system for sumneko")
- end
+local system_name
+if vim.fn.has("mac") == 1 then
+  system_name = "macOS"
+elseif vim.fn.has("unix") == 1 then
+  system_name = "Linux"
+elseif vim.fn.has('win32') == 1 then
+  system_name = "Windows"
+else
+  print("Unsupported system for sumneko")
+end
 
- -- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
- local sumneko_root_path = os.getenv('HOME') ..'/apps/lua-language-server'
- local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
+-- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
+local sumneko_root_path = os.getenv('HOME') .. '/apps/lua-language-server'
+local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
 
- local runtime_path = vim.split(package.path, ';')
- table.insert(runtime_path, "lua/?.lua")
- table.insert(runtime_path, "lua/?/init.lua")
+local runtime_path = vim.split(package.path, ';')
+table.insert(runtime_path, "lua/?.lua")
+table.insert(runtime_path, "lua/?/init.lua")
 
- require'lspconfig'.sumneko_lua.setup {
-   capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-   cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
-   settings = {
-     Lua = {
-       runtime = {
-         -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-         version = 'LuaJIT',
-         -- Setup your lua path
-         path = runtime_path,
-       },
-       diagnostics = {
-         -- Get the language server to recognize the `vim` global
-         globals = {'vim'},
-       },
-       workspace = {
-         -- Make the server aware of Neovim runtime files
-         library = vim.api.nvim_get_runtime_file("", true),
-       },
-       -- Do not send telemetry data containing a randomized but unique identifier
-       telemetry = {
-         enable = false,
-       },
-     },
-   },
- }
+require 'lspconfig'.sumneko_lua.setup {
+  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+  cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" };
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+        -- Setup your lua path
+        path = runtime_path,
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = { 'vim' },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
+}
 
 vim.keymap.set('n', '[b', ':bnext<CR>')
 vim.keymap.set('n', ']b', ':bprev<CR>')
@@ -509,7 +517,7 @@ vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 -- vim.keymap.set('o', 'au', function() require'treesitter-unit'.select(true) end)
 
 -- custom folder icon
-require'nvim-web-devicons'.setup({
+require 'nvim-web-devicons'.setup({
   override = {
     lir_folder_icon = {
       icon = "",
@@ -520,11 +528,13 @@ require'nvim-web-devicons'.setup({
 })
 -- use visual mode
 function _G.LirSettings()
-  vim.api.nvim_buf_set_keymap(0, 'x', 'J', ':<C-u>lua require"lir.mark.actions".toggle_mark("v")<CR>', {noremap = true, silent = true})
+  vim.api.nvim_buf_set_keymap(0, 'x', 'J', ':<C-u>lua require"lir.mark.actions".toggle_mark("v")<CR>',
+    { noremap = true, silent = true })
 
   -- echo cwd
-  vim.api.nvim_echo({{vim.fn.expand('%:p'), 'Normal'}}, false, {})
+  vim.api.nvim_echo({ { vim.fn.expand('%:p'), 'Normal' } }, false, {})
 end
+
 vim.cmd [[augroup lir-settings]]
 vim.cmd [[  autocmd!]]
 vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
@@ -544,7 +554,7 @@ require('nvim-tree').setup({
     width = 60
   }
 })
-vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', {silent=true})
+vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', { silent = true })
 
 vim.keymap.set('n', 'gq', ':bd!<CR>')
 vim.keymap.set('n', '<leader>w', ':w<CR>')
@@ -573,18 +583,19 @@ function toggle_terminal()
   local cur_tab = vim.api.nvim_get_current_tabpage()
   local term_buf = term_buf_of_tab[cur_tab]
   if term_buf ~= nil then
-   local cur_buf = vim.api.nvim_get_current_buf()
-   if cur_buf == term_buf then
-     vim.cmd('q')
-   else
-     vim.cmd('vert sb' .. term_buf)
-     vim.cmd(':startinsert')
-   end
+    local cur_buf = vim.api.nvim_get_current_buf()
+    if cur_buf == term_buf then
+      vim.cmd('q')
+    else
+      vim.cmd('vert sb' .. term_buf)
+      vim.cmd(':startinsert')
+    end
   else
     spawn_terminal()
     vim.cmd(':startinsert')
   end
 end
+
 vim.keymap.set('n', '<c-y>', toggle_terminal)
 vim.keymap.set('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
 vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
@@ -673,10 +684,10 @@ cmp.setup({
 })
 
 local t = function(str)
-    return vim.api.nvim_replace_termcodes(str, true, true, true)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-_G.expand = function ()
+_G.expand = function()
   -- print("hurray!!")
   if ls.expand_or_jumpable() then
     return t("<Plug>luasnip-expand-or-jump")
@@ -684,7 +695,7 @@ _G.expand = function ()
   return ''
 end
 
-_G.expand_back = function ()
+_G.expand_back = function()
   -- print("hurray!!")
   if ls.jumpable(-1) then
     return t("<Plug>luasnip-jump-prev")
@@ -700,27 +711,27 @@ vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
 vim.keymap.set('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
 
 _G.test_dap = function()
-  local dap = require'dap'
+  local dap = require 'dap'
   -- dap.terminate(nil, nil, function()
   --   vim.wait(2000, function()
   --     local session = dap.session()
   --     return session and session.initialized
   --   end)
-    dap.run({
-      args = { "--no-cache" },
-      console = "integratedTerminal",
-      cwd = "/Users/d065023/projects/DevOnDuty/VimAsIDE",
-      disableOptimisticBPs = true,
-      port = 9229,
-      protocol = "inspector",
-      request = "launch",
-      runtimeArgs = { "--inspect-brk", "foo.js" },
-      -- skipFiles = { "file:///<node_internals>/**/*.js" },
-      skipFiles = { "promiseInitHookWithDestroyTracking" },
-      sourceMaps = "inline",
-      type = "node2"
-      })
-    -- end)
+  dap.run({
+    args = { "--no-cache" },
+    console = "integratedTerminal",
+    cwd = "/Users/d065023/projects/DevOnDuty/VimAsIDE",
+    disableOptimisticBPs = true,
+    port = 9229,
+    protocol = "inspector",
+    request = "launch",
+    runtimeArgs = { "--inspect-brk", "foo.js" },
+    -- skipFiles = { "file:///<node_internals>/**/*.js" },
+    skipFiles = { "promiseInitHookWithDestroyTracking" },
+    sourceMaps = "inline",
+    type = "node2"
+  })
+  -- end)
 end
 
 -- lualine
@@ -729,8 +740,8 @@ require('lualine').setup {
   options = {
     icons_enabled = true,
     theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
+    component_separators = { left = '', right = '' },
+    section_separators = { left = '', right = '' },
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -745,18 +756,18 @@ require('lualine').setup {
     }
   },
   sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
+    lualine_a = { 'mode' },
+    lualine_b = { 'branch', 'diff', 'diagnostics' },
+    lualine_c = { 'filename' },
+    lualine_x = { 'encoding', 'fileformat', 'filetype' },
+    lualine_y = { 'progress' },
+    lualine_z = { 'location' }
   },
   inactive_sections = {
     lualine_a = {},
     lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
+    lualine_c = { 'filename' },
+    lualine_x = { 'location' },
     lualine_y = {},
     lualine_z = {}
   },
