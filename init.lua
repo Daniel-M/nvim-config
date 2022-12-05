@@ -311,7 +311,7 @@ local nvim_lsp = require 'lspconfig'
 local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
-    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
   }
 end
 
@@ -345,7 +345,7 @@ vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
 -- end
 -- if lspconfig.sapcds_lsp.setup then
 --   lspconfig.sapcds_lsp.setup{
---     -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+--     -- capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 --   }
 -- end
 
@@ -474,7 +474,7 @@ table.insert(runtime_path, "lua/?.lua")
 table.insert(runtime_path, "lua/?/init.lua")
 
 require 'lspconfig'.sumneko_lua.setup {
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+  capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities()),
   cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" };
   settings = {
     Lua = {
@@ -786,7 +786,7 @@ require('lualine').setup {
 -- go.nvim
 require('go').setup({
   lsp_cfg = {
-    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
   },
 })
 -- require("go.format").gofmt()  -- gofmt only
