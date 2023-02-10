@@ -14,6 +14,8 @@ require('packer').startup(function(use)
   use 'folke/tokyonight.nvim'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
   use 'kyazdani42/nvim-tree.lua'
   use 'kyazdani42/nvim-web-devicons'
@@ -45,6 +47,7 @@ require('packer').startup(function(use)
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use { 'nvim-telescope/telescope-fzf-native.nvim',
     run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+  use 'norcalli/nvim-colorizer.lua'
 end
 )
 
@@ -62,6 +65,7 @@ opt.number = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
+opt.scrolloff = 10
 -- opt.relativenumber = true
 vim.cmd('set number')
 vim.cmd('set noignorecase')
@@ -776,6 +780,8 @@ require('lualine').setup {
   inactive_winbar = {},
   extensions = {}
 }
+
+require('colorizer').setup()
 
 -- ldelossa/gh.nvim
 -- require('litee.lib').setup()
