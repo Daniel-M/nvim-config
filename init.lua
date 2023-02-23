@@ -7,16 +7,16 @@ g.mapleader = " "
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'David-Kunz/cmp-npm'
-  use 'David-Kunz/jester'
-  use 'David-Kunz/treesitter-unit'
+  -- use 'David-Kunz/jester'
+  -- use 'David-Kunz/treesitter-unit'
   use 'L3MON4D3/LuaSnip'
   use 'Mofiqul/dracula.nvim'
   use 'folke/tokyonight.nvim'
+  use 'hrsh7th/nvim-cmp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-cmdline'
-  use 'hrsh7th/nvim-cmp'
   use 'kyazdani42/nvim-tree.lua'
   use 'kyazdani42/nvim-web-devicons'
   use 'lewis6991/gitsigns.nvim'
@@ -44,6 +44,7 @@ require('packer').startup(function(use)
   use 'williamboman/mason.nvim'
   use 'windwp/nvim-autopairs'
   use 'yassinebridi/vim-purpura'
+  use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use { 'nvim-telescope/telescope-fzf-native.nvim',
     run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
@@ -88,12 +89,180 @@ vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
 
 require("mason").setup()
 require("mason-lspconfig").setup()
+
 require("navigator").setup({
   mason = true,
   lsp = {
     disable_lsp = { 'flow' }, -- enabling flow breaks navigator with mason
   }
 })
+
+require("luasnip.loaders.from_vscode").lazy_load()
+local ls = require("luasnip")
+local cmp = require("cmp")
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      ls.lsp_expand(args.body)
+    end,
+  },
+
+  sources = cmp.config.sources({
+    { name = 'path' },
+    { name = 'nvim_lsp', keyword_length = 1 },
+    { name = 'npm' },
+    { name = 'luasnip', keyword_length = 2 }
+  },
+    {
+      { name = 'buffer', keyword_length = 3 },
+    }),
+
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+
+  formatting = {
+    fields = { 'menu', 'abbr', 'kind' },
+    format = function(entry, item)
+      local menu_icon = {
+        nvim_lsp = 'λ',
+        luasnip = '⋗',
+        buffer = 'Ω',
+        path = '🖫',
+      }
+
+      item.menu = menu_icon[entry.source.name]
+      return item
+    end,
+  },
+
+  mapping = {
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if ls.expand_or_jumpable() then
+        ls.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if ls.jumpable(-1) then
+        ls.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  },
+
+  -- formatting = {
+  --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+  -- }
+})
+
+-- local lspconfig = require('lspconfig')
+-- local lsp_defaults = lspconfig.util.default_config
+
+-- lsp_defaults.capabilities = vim.tbl_deep_extend(
+--   'force',
+--   lsp_defaults.capabilities,
+--   require('cmp_nvim_lsp').default_capabilities()
+-- )
+
+-- lspconfig.lua_ls.setup({})
+
+local nvim_lsp = require 'lspconfig'
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true
+}
+local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+  }
+end
+require('ufo').setup()
+
+
+-- local nvim_lsp = require 'lspconfig'
+-- local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
+-- for _, lsp in ipairs(servers) do
+--   nvim_lsp[lsp].setup {
+--     capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+--   }
+-- end
+
+vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
+vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
+vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
+vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
+vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
+vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
+vim.keymap.set('n', 'ga', function() vim.lsp.buf.code_action() end)
+vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
+
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+_G.expand = function()
+  -- print("hurray!!")
+  if ls.expand_or_jumpable() then
+    return t("<Plug>luasnip-expand-or-jump")
+  end
+  return ''
+end
+
+_G.expand_back = function()
+  -- print("hurray!!")
+  if ls.jumpable(-1) then
+    return t("<Plug>luasnip-jump-prev")
+  end
+  return ''
+end
+
+vim.api.nvim_set_keymap('i', '<c-j>', 'v:lua.expand()', { expr = true })
+vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', { expr = true })
+vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', { expr = true })
+vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
+
+vim.keymap.set('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
+
+_G.test_dap = function()
+  local dap = require 'dap'
+  -- dap.terminate(nil, nil, function()
+  --   vim.wait(2000, function()
+  --     local session = dap.session()
+  --     return session and session.initialized
+  --   end)
+  dap.run({
+    args = { "--no-cache" },
+    console = "integratedTerminal",
+    cwd = "/Users/d065023/projects/DevOnDuty/VimAsIDE",
+    disableOptimisticBPs = true,
+    port = 9229,
+    protocol = "inspector",
+    request = "launch",
+    runtimeArgs = { "--inspect-brk", "foo.js" },
+    -- skipFiles = { "file:///<node_internals>/**/*.js" },
+    skipFiles = { "promiseInitHookWithDestroyTracking" },
+    sourceMaps = "inline",
+    type = "node2"
+  })
+  -- end)
+end
+
+
 
 -- lewis6991/gitsigns.nvim
 function diffThisBranch()
@@ -298,7 +467,6 @@ npairs.setup({
   },
   disable_filetype = { "TelescopePrompt", "guihua", "guihua_rust", "clap_input" },
 })
-
 local ts_conds = require('nvim-autopairs.ts-conds')
 
 
@@ -310,23 +478,6 @@ npairs.add_rules({
       :with_pair(ts_conds.is_not_ts_node({ 'function' }))
 })
 -- end nvim-autopairs config
-
-local nvim_lsp = require 'lspconfig'
-local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-  }
-end
-
-vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
-vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
-vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
-vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
-vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
-vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
-vim.keymap.set('n', 'ga', function() vim.lsp.buf.code_action() end)
-vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
 
 -- CDS
 -- cmd([[
@@ -399,12 +550,50 @@ parser_config.cds = {
 }
 
 require 'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the four listed parsers should always be installed)
+  ensure_installed = {
+    "bash",
+    "c",
+    "go",
+    "help",
+    "html",
+    "javascript",
+    "json",
+    "lua",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "query",
+    "regex",
+    "rust",
+    "tsx",
+    "typescript",
+    "vim",
+    "vue",
+    "yaml",
+  },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
   highlight = {
     enable = true,
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
   },
   -- indent = {
   --   enable = true
   -- },
+  endwise = {
+    enabled = true
+  }
 }
 -- mfussenegger/nvim-dap
 local dap = require('dap')
@@ -448,14 +637,14 @@ vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
 require('nvim-dap-virtual-text').setup()
 
 -- David-Kunz/jester
-require 'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
-vim.keymap.set('n', '<leader>tt', function() require "jester".run() end)
-vim.keymap.set('n', '<leader>t_', function() require "jester".run_last() end)
-vim.keymap.set('n', '<leader>tf', function() require "jester".run_file() end)
-vim.keymap.set('n', '<leader>d_', function() require "jester".debug_last() end)
-vim.keymap.set('n', '<leader>df', function() require "jester".debug_file() end)
-vim.keymap.set('n', '<leader>dq', function() require "jester".terminate() end)
-vim.keymap.set('n', '<leader>dd', function() require "jester".debug() end)
+-- require 'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
+-- vim.keymap.set('n', '<leader>tt', function() require "jester".run() end)
+-- vim.keymap.set('n', '<leader>t_', function() require "jester".run_last() end)
+-- vim.keymap.set('n', '<leader>tf', function() require "jester".run_file() end)
+-- vim.keymap.set('n', '<leader>d_', function() require "jester".debug_last() end)
+-- vim.keymap.set('n', '<leader>df', function() require "jester".debug_file() end)
+-- vim.keymap.set('n', '<leader>dq', function() require "jester".terminate() end)
+-- vim.keymap.set('n', '<leader>dd', function() require "jester".debug() end)
 
 -- lua language server
 local system_name
@@ -508,10 +697,10 @@ vim.keymap.set('n', '[b', ':bnext<CR>')
 vim.keymap.set('n', ']b', ':bprev<CR>')
 
 -- David-Kunz/treesitter-unit
-vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
-vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
-vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
-vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+-- vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
+-- vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
+-- vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
+-- vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
 -- require"treesitter-unit".enable_highlighting()
 
 -- local tunit = require'treesitter-unit'
@@ -555,7 +744,7 @@ require('nvim-tree').setup({
   hijack_cursor = true,
   update_focused_file = { enable = true },
   view = {
-    width = 60
+    width = 40
   }
 })
 vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', { silent = true })
@@ -639,103 +828,6 @@ vim.keymap.set('n', '<c-i>', '<c-i>zz')
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
-require("luasnip.loaders.from_vscode").lazy_load()
-local ls = require("luasnip")
-local cmp = require("cmp")
-
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      ls.lsp_expand(args.body)
-    end,
-  },
-
-  mapping = {
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm({ select = false }),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if ls.expand_or_jumpable() then
-        ls.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if ls.jumpable(-1) then
-        ls.jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-  },
-
-  sources = {
-    { name = 'npm' },
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-    { name = 'buffer', keyword_length = 5 },
-  },
-  -- formatting = {
-  --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
-  -- }
-})
-
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-_G.expand = function()
-  -- print("hurray!!")
-  if ls.expand_or_jumpable() then
-    return t("<Plug>luasnip-expand-or-jump")
-  end
-  return ''
-end
-
-_G.expand_back = function()
-  -- print("hurray!!")
-  if ls.jumpable(-1) then
-    return t("<Plug>luasnip-jump-prev")
-  end
-  return ''
-end
-
-vim.api.nvim_set_keymap('i', '<c-j>', 'v:lua.expand()', { expr = true })
-vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', { expr = true })
-vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', { expr = true })
-vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
-
-vim.keymap.set('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
-
-_G.test_dap = function()
-  local dap = require 'dap'
-  -- dap.terminate(nil, nil, function()
-  --   vim.wait(2000, function()
-  --     local session = dap.session()
-  --     return session and session.initialized
-  --   end)
-  dap.run({
-    args = { "--no-cache" },
-    console = "integratedTerminal",
-    cwd = "/Users/d065023/projects/DevOnDuty/VimAsIDE",
-    disableOptimisticBPs = true,
-    port = 9229,
-    protocol = "inspector",
-    request = "launch",
-    runtimeArgs = { "--inspect-brk", "foo.js" },
-    -- skipFiles = { "file:///<node_internals>/**/*.js" },
-    skipFiles = { "promiseInitHookWithDestroyTracking" },
-    sourceMaps = "inline",
-    type = "node2"
-  })
-  -- end)
 end
 
 -- lualine
