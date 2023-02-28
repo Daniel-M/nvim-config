@@ -41,7 +41,10 @@ require('packer').startup(function(use)
   use 'williamboman/mason.nvim'
   use 'windwp/nvim-autopairs'
   use 'yassinebridi/vim-purpura'
-  use { 'L3MON4D3/LuaSnip', tag = 'v<CurrentMajor>.*', run = 'make install_jsregexp' }
+  use { 'L3MON4D3/LuaSnip', tag = 'v<CurrentMajor>.*', run = 'make install_jsregexp', requires = {
+    "rafamadriz/friendly-snippets",
+    "molleweide/LuaSnip-snippets.nvim",
+  }, }
   use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
@@ -266,8 +269,10 @@ npairs.add_rules({
 
 require('colorizer').setup()
 
-require("luasnip.loaders.from_vscode").lazy_load()
 local ls = require("luasnip")
+-- be sure to load this first since it overwrites the snippets table.
+ls.snippets = require("luasnip_snippets").load_snippets()
+require("luasnip.loaders.from_vscode").lazy_load()
 local cmp = require("cmp")
 
 cmp.setup({
