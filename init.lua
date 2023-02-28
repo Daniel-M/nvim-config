@@ -7,62 +7,55 @@ g.mapleader = " "
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'David-Kunz/cmp-npm'
-  -- use 'David-Kunz/jester'
-  -- use 'David-Kunz/treesitter-unit'
-  use 'L3MON4D3/LuaSnip'
+  use 'David-Kunz/treesitter-unit'
+  use 'marko-cerovac/material.nvim'
   use 'Mofiqul/dracula.nvim'
   use 'folke/tokyonight.nvim'
-  use 'hrsh7th/nvim-cmp'
   use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
+  use 'hrsh7th/nvim-cmp'
+  use 'kevinhwang91/nvim-hlslens'
   use 'kyazdani42/nvim-tree.lua'
   use 'kyazdani42/nvim-web-devicons'
   use 'lewis6991/gitsigns.nvim'
-  use 'marko-cerovac/material.nvim'
-  -- use 'mfussenegger/nvim-dap'
   use 'mhartington/formatter.nvim'
   use 'neovim/nvim-lspconfig'
+  use 'norcalli/nvim-colorizer.lua'
   use 'nvim-lua/plenary.nvim'
-  use 'nvim-lua/popup.nvim'
   use 'nvim-lualine/lualine.nvim'
-  -- use 'nvim-telescope/telescope-dap.nvim'
   use 'nvim-telescope/telescope-ui-select.nvim'
   use 'nvim-telescope/telescope.nvim'
   use 'rafamadriz/friendly-snippets'
-  use 'ray-x/go.nvim'
-  use { 'ray-x/guihua.lua', run = 'cd lua/fzy && make' }
-  use 'ray-x/navigator.lua'
   use 'ray-x/aurora'
+  use 'ray-x/go.nvim'
+  use 'ray-x/navigator.lua'
   use 'ray-x/starry.nvim'
   use 'ryanoasis/vim-devicons'
   use 'saadparwaiz1/cmp_luasnip'
-  -- use 'theHamsta/nvim-dap-virtual-text'
-  use 'tversteeg/registers.nvim'
-  use 'kevinhwang91/nvim-hlslens'
   use 'tpope/vim-commentary'
-  use 'voldikss/vim-floaterm'
+  use 'tversteeg/registers.nvim'
   use 'wbthomason/packer.nvim'
   use 'williamboman/mason-lspconfig.nvim'
   use 'williamboman/mason.nvim'
   use 'windwp/nvim-autopairs'
   use 'yassinebridi/vim-purpura'
+  use { 'L3MON4D3/LuaSnip', tag = 'v<CurrentMajor>.*', run = 'make install_jsregexp' }
   use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use { 'nvim-telescope/telescope-fzf-native.nvim',
-    run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-  use 'norcalli/nvim-colorizer.lua'
+  use { 'ray-x/guihua.lua', run = 'cd lua/fzy && make' }
 end
 )
 
 
--- default options
-opt.completeopt = { 'menu', 'menuone', 'noselect' }
+-- -- default options
+-- opt.completeopt = { 'menu', 'menuone', 'noselect' }
 opt.laststatus = 3
 opt.mouse = 'a'
-opt.splitright = true
-opt.splitbelow = true
+-- opt.splitright = true
+-- opt.splitbelow = true
 opt.expandtab = true
 opt.tabstop = 2
 opt.shiftwidth = 2
@@ -70,29 +63,124 @@ opt.number = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
-opt.scrolloff = 10
+opt.scrolloff = 15
 -- opt.relativenumber = true
-vim.cmd('set number')
-vim.cmd('set noignorecase')
-vim.cmd('set norelativenumber')
--- set diffopt+=vertical " starts diff mode in vertical split
-opt.cmdheight = 1
--- set shortmess+=c " don't need to press enter so often
-opt.signcolumn = 'yes'
-opt.updatetime = 520
-opt.undofile = true
+-- -- set diffopt+=vertical " starts diff mode in vertical split
+-- opt.cmdheight = 1
+-- -- set shortmess+=c " don't need to press enter so often
+-- opt.signcolumn = 'yes'
+-- opt.updatetime = 520
+-- opt.undofile = true
 cmd('filetype plugin on')
-opt.backup = false
-g.netrw_banner = false
-g.netrw_liststyle = 3
-g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
+-- opt.backup = false
+-- g.netrw_banner = false
+-- g.netrw_liststyle = 3
+-- g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
 
--- opt.path:append({ "**" })
-vim.cmd([[set path=$PWD/**]])
-vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
+-- -- opt.path:append({ "**" })
+-- vim.cmd([[set path=$PWD/**]])
+-- vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
+
+-- -- vim.cmd('colorscheme aurora')
+vim.cmd('colorscheme middlenight_blue')
+-- -- vim.cmd('colorscheme purpura')
+-- -- vim.cmd('colorscheme dracula')
+vim.cmd('set background=dark')
+vim.cmd('set termguicolors')
+-- -- vim.cmd 'colorscheme tokyonight'
+-- -- vim.cmd 'colorscheme gruvbox'
+-- -- vim.cmd 'colorscheme github_dark'
+
 
 require("mason").setup()
-require("mason-lspconfig").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "bashls",
+    "docker_compose_language_service",
+    "dockerls",
+    "eslint",
+    "gopls",
+    "graphql",
+    "html",
+    "jsonls",
+    -- "pylsp",
+    "pyright",
+    "quick_lint_js",
+    "sqls",
+    "tsserver",
+    "volar",
+    "vuels",
+    "yamlls",
+  }
+})
+
+-- local lspconfig = require('lspconfig')
+-- local lsp_defaults = lspconfig.util.default_config
+
+-- lsp_defaults.capabilities = vim.tbl_deep_extend(
+--   'force',
+--   lsp_defaults.capabilities,
+--   require('cmp_nvim_lsp').default_capabilities()
+-- )
+--
+
+local nvim_lsp = require 'lspconfig'
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities.textDocument.foldingRange = {
+--   dynamicRegistration = false,
+--   lineFoldingOnly = true
+-- }
+local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+  }
+end
+
+nvim_lsp.lua_ls.setup({})
+
+-- lualine
+
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = '' },
+    section_separators = { left = '', right = '' },
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = { 'mode' },
+    lualine_b = { 'branch', 'diff', 'diagnostics' },
+    lualine_c = { 'filename' },
+    lualine_x = { 'encoding', 'fileformat', 'filetype' },
+    lualine_y = { 'progress' },
+    lualine_z = { 'location' }
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = { 'filename' },
+    lualine_x = { 'location' },
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
 
 require("navigator").setup({
   mason = true,
@@ -100,6 +188,83 @@ require("navigator").setup({
     disable_lsp = { 'flow' }, -- enabling flow breaks navigator with mason
   }
 })
+
+require 'nvim-treesitter.configs'.setup({
+  -- A list of parser names, or "all" (the four listed parsers should always be installed)
+  ensure_installed = {
+    "bash",
+    "c",
+    "go",
+    "help",
+    "html",
+    "javascript",
+    "json",
+    "lua",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "query",
+    "regex",
+    "rust",
+    "tsx",
+    "typescript",
+    "vim",
+    "vue",
+    "yaml",
+  },
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+  highlight = {
+    enable = true,
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+  indent = {
+    enable = true
+  },
+  endwise = {
+    enabled = true
+  }
+})
+
+-- David-Kunz/treesitter-unit
+vim.api.nvim_set_keymap('x', 'iu', ':lua require"treesitter-unit".select()<CR>', { noremap = true })
+vim.api.nvim_set_keymap('x', 'au', ':lua require"treesitter-unit".select(true)<CR>', { noremap = true })
+vim.api.nvim_set_keymap('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>', { noremap = true })
+vim.api.nvim_set_keymap('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>', { noremap = true })
+
+-- windwp/nvim-autopairs
+local npairs = require("nvim-autopairs")
+local Rule = require('nvim-autopairs.rule')
+
+npairs.setup({
+  check_ts = true,
+  ts_config = {
+    lua = { 'string' }, -- it will not add a pair on that treesitter node
+    javascript = { 'template_string' },
+    java = false, -- don't check treesitter on java
+  },
+  disable_filetype = { "TelescopePrompt", "guihua", "guihua_rust", "clap_input" },
+})
+local ts_conds = require('nvim-autopairs.ts-conds')
+
+
+-- press % => %% only while inside a comment or string
+npairs.add_rules({
+  Rule("%", "%", "lua")
+  :with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
+  Rule("$", "$", "lua")
+  :with_pair(ts_conds.is_not_ts_node({ 'function' }))
+})
+-- end nvim-autopairs config
+
+require('colorizer').setup()
 
 require("luasnip.loaders.from_vscode").lazy_load()
 local ls = require("luasnip")
@@ -167,121 +332,53 @@ cmp.setup({
   -- }
 })
 
--- local lspconfig = require('lspconfig')
--- local lsp_defaults = lspconfig.util.default_config
 
--- lsp_defaults.capabilities = vim.tbl_deep_extend(
---   'force',
---   lsp_defaults.capabilities,
---   require('cmp_nvim_lsp').default_capabilities()
--- )
+-- Configure UFO using Treesitter
+require('ufo').setup({
+  provider_selector = function(bufnr, filetype, buftype)
+    return { 'treesitter', 'indent' }
+  end
+})
 
--- lspconfig.lua_ls.setup({})
-
-local nvim_lsp = require 'lspconfig'
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
-  lineFoldingOnly = true
-}
-local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-  }
-end
-require('ufo').setup()
-
-
+-- Other option to configure UFO using LSP
 -- local nvim_lsp = require 'lspconfig'
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities.textDocument.foldingRange = {
+--   dynamicRegistration = false,
+--   lineFoldingOnly = true
+-- }
 -- local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
 -- for _, lsp in ipairs(servers) do
 --   nvim_lsp[lsp].setup {
---     capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+--     capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 --   }
 -- end
+-- require('ufo').setup()
 
--- vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end)
--- vim.keymap.set('n', 'gh', function() vim.lsp.buf.hover() end)
--- vim.keymap.set('n', 'gD', function() vim.lsp.buf.implementation() end)
--- vim.keymap.set('n', '<c-k>', function() vim.lsp.buf.signature_help() end)
--- vim.keymap.set('n', 'gr', function() vim.lsp.buf.references() end)
--- vim.keymap.set('n', 'gR', function() vim.lsp.buf.rename() end)
--- vim.keymap.set('n', 'ga', function() vim.lsp.buf.code_action() end)
--- vim.keymap.set('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
+-- -- highlight on yank
+vim.cmd([[au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}]])
 
-require("registers").setup()
-require('hlslens').setup()
+-- kyazdani42/nvim-tree.lua
+require('nvim-tree').setup({
+  hijack_cursor = true,
+  update_focused_file = { enable = true },
+  view = {
+    width = 40
+  }
+})
+vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', { silent = true })
 
-local kopts = { noremap = true, silent = true }
+vim.keymap.set('n', 'gq', ':bd!<CR>')
+vim.keymap.set('n', '<leader>w', ':w<CR>')
 
-vim.api.nvim_set_keymap('n', 'n',
-  [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
-  kopts)
-vim.api.nvim_set_keymap('n', 'N',
-  [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
-  kopts)
-vim.api.nvim_set_keymap('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-vim.api.nvim_set_keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+vim.cmd('iabbrev :tup: 👍')
+vim.cmd('iabbrev :tdo: 👎')
+vim.cmd('iabbrev :smi: 😊')
+vim.cmd('iabbrev :sad: 😔')
+vim.cmd('iabbrev darkred #8b0000')
+vim.cmd('iabbrev darkgreen #006400')
 
-vim.api.nvim_set_keymap('n', '<Leader>l', '<Cmd>noh<CR>', kopts)
-
--- local t = function(str)
---   return vim.api.nvim_replace_termcodes(str, true, true, true)
--- end
-
--- _G.expand = function()
---   -- print("hurray!!")
---   if ls.expand_or_jumpable() then
---     return t("<Plug>luasnip-expand-or-jump")
---   end
---   return ''
--- end
-
--- _G.expand_back = function()
---   -- print("hurray!!")
---   if ls.jumpable( -1) then
---     return t("<Plug>luasnip-jump-prev")
---   end
---   return ''
--- end
-
--- vim.api.nvim_set_keymap('i', '<c-j>', 'v:lua.expand()', { expr = true })
--- vim.api.nvim_set_keymap('i', '<c-k>', 'v:lua.expand_back()', { expr = true })
--- vim.api.nvim_set_keymap('s', '<c-j>', 'v:lua.expand()', { expr = true })
--- vim.api.nvim_set_keymap('s', '<c-k>', 'v:lua.expand_back()', { expr = true })
-
--- vim.keymap.set('n', '<leader>ls', '<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>')
-
--- _G.test_dap = function()
---   local dap = require 'dap'
---   -- dap.terminate(nil, nil, function()
---   --   vim.wait(2000, function()
---   --     local session = dap.session()
---   --     return session and session.initialized
---   --   end)
---   dap.run({
---     args = { "--no-cache" },
---     console = "integratedTerminal",
---     cwd = "/Users/d065023/projects/DevOnDuty/VimAsIDE",
---     disableOptimisticBPs = true,
---     port = 9229,
---     protocol = "inspector",
---     request = "launch",
---     runtimeArgs = { "--inspect-brk", "foo.js" },
---     -- skipFiles = { "file:///<node_internals>/**/*.js" },
---     skipFiles = { "promiseInitHookWithDestroyTracking" },
---     sourceMaps = "inline",
---     type = "node2"
---   })
---   -- end)
--- end
-
-
-
--- lewis6991/gitsigns.nvim
+-- -- lewis6991/gitsigns.nvim
 function diffThisBranch()
   local branch = vim.fn.input("Branch: ", "")
   require "gitsigns".diffthis(branch)
@@ -316,6 +413,23 @@ require('gitsigns').setup({
     vim.keymap.set('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
   end
 })
+
+require("registers").setup()
+require('hlslens').setup()
+local kopts = { noremap = true, silent = true }
+
+vim.api.nvim_set_keymap('n', 'n',
+  [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
+  kopts)
+vim.api.nvim_set_keymap('n', 'N',
+  [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
+  kopts)
+vim.api.nvim_set_keymap('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+vim.api.nvim_set_keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+
+vim.api.nvim_set_keymap('n', '<Leader>l', '<Cmd>noh<CR>', kopts)
 
 -- mhartington/formatter.nvim
 vim.keymap.set('n', '<leader>F', ':Format<CR>')
@@ -367,23 +481,23 @@ require('formatter').setup({
     python = {
       require("formatter.filetypes.python").autopep8,
     },
-    -- rust = {
-    --   function()
-    --     return {
-    --       exe = "rustfmt",
-    --       stdin = true
-    --     }
-    --   end
-    -- },
-    -- sql = {
-    --    function()
-    --       return {
-    --         exe = "sqlformat",
-    --         args = {vim.api.nvim_buf_get_name(0), '-a'},
-    --         stdin = true
-    --       }
-    --     end
-    -- },
+    rust = {
+      function()
+        return {
+          exe = "rustfmt",
+          stdin = true
+        }
+      end
+    },
+    sql = {
+      function()
+        return {
+          exe = "sqlformat",
+          args = { vim.api.nvim_buf_get_name(0), '-a' },
+          stdin = true
+        }
+      end
+    },
     -- Use the special "*" filetype for defining formatter configurations on
     -- any filetype
     ["*"] = {
@@ -393,8 +507,9 @@ require('formatter').setup({
     }
   }
 })
-local telescope_actions = require("telescope.actions.set")
 
+
+local telescope_actions = require("telescope.actions.set")
 local fixfolds = {
   hidden = true,
   attach_mappings = function(_)
@@ -407,9 +522,6 @@ local fixfolds = {
   end,
 }
 
--- local actions = require("telescope.actions")
-
-
 require('telescope').setup {
   defaults = { file_ignore_patterns = { "node_modules" } },
   pickers = {
@@ -421,6 +533,11 @@ require('telescope').setup {
     oldfiles = fixfolds,
   },
   extensions = {
+    ["ui-select"] = {
+      require("telescope.themes").get_dropdown {
+        -- even more opts
+      }
+    },
     fzf = {
       fuzzy = true, -- false will only do exact matching
       override_generic_sorter = true, -- override the generic sorter
@@ -430,9 +547,10 @@ require('telescope').setup {
   }
 }
 
--- To get fzf loaded and working with telescope, you need to call
--- load_extension, somewhere after setup function:
+-- -- To get fzf loaded and working with telescope, you need to call
+-- -- load_extension, somewhere after setup function:
 require('telescope').load_extension('fzf')
+require("telescope").load_extension("ui-select")
 
 -- nvim-telescope/telescope.nvim
 _G.telescope_find_files_in_path = function(path)
@@ -456,10 +574,6 @@ end
 vim.keymap.set('n', '<leader>fD', function() telescope_live_grep_in_path() end)
 vim.keymap.set('n', '<leader><space>', function() telescope_files_or_git_files() end)
 vim.keymap.set('n', '<leader>fd', function() telescope_find_files_in_path() end)
-vim.keymap.set('n', '<leader>ft', function() telescope_find_files_in_path("./tests") end)
-vim.keymap.set('n', '<leader>fT', function() telescope_live_grep_in_path("./tests") end)
--- vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
--- vim.keymap.set('n', '<leader>fo', ':Telescope file_browser<CR>')
 vim.keymap.set('n', '<leader>fn', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fr', ':Telescope resume<CR>')
 vim.keymap.set('n', '<leader>fg', ':Telescope git_branches<CR>')
@@ -468,440 +582,58 @@ vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 vim.keymap.set('n', '<leader>ff', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>FF', ':Telescope grep_string<CR>')
 
--- David-Kunz/cmp-npm
+-- -- David-Kunz/cmp-npm
 require('cmp-npm').setup({ ignore = { "beta", "rc" } })
 
--- windwp/nvim-autopairs
-local npairs = require("nvim-autopairs")
-local Rule = require('nvim-autopairs.rule')
-
-npairs.setup({
-  check_ts = true,
-  ts_config = {
-    lua = { 'string' }, -- it will not add a pair on that treesitter node
-    javascript = { 'template_string' },
-    java = false, -- don't check treesitter on java
-  },
-  disable_filetype = { "TelescopePrompt", "guihua", "guihua_rust", "clap_input" },
-})
-local ts_conds = require('nvim-autopairs.ts-conds')
-
-
--- press % => %% only while inside a comment or string
-npairs.add_rules({
-  Rule("%", "%", "lua")
-  :with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
-  Rule("$", "$", "lua")
-  :with_pair(ts_conds.is_not_ts_node({ 'function' }))
-})
--- end nvim-autopairs config
-
--- CDS
--- cmd([[
--- augroup MyCDSCode
---      autocmd!
---      autocmd BufReadPre,FileReadPre *.cds set ft=cds
--- augroup END
--- ]])
--- local lspconfig = require'lspconfig'
--- local configs = require'lspconfig.configs'
--- if not configs.sapcds_lsp then
---   configs.sapcds_lsp = {
---     default_config = {
---       cmd = {vim.fn.expand("$HOME/projects/startcdslsp")};
---       filetypes = {'cds'};
---       root_dir = lspconfig.util.root_pattern('.git', 'package.json'),
---       settings = {};
---     };
---   }
--- end
--- if lspconfig.sapcds_lsp.setup then
---   lspconfig.sapcds_lsp.setup{
---     -- capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
---   }
+-- -- lua language server
+-- local system_name
+-- if vim.fn.has("mac") == 1 then
+--   system_name = "macOS"
+-- elseif vim.fn.has("unix") == 1 then
+--   system_name = "Linux"
+-- elseif vim.fn.has('win32') == 1 then
+--   system_name = "Windows"
+-- else
+--   print("Unsupported system for sumneko")
 -- end
 
-vim.keymap.set('n', '<leader><esc><esc>', ':tabclose<CR>')
+-- -- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
+-- local sumneko_root_path = os.getenv('HOME') .. '/apps/lua-language-server'
+-- local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
 
--- vim.g.material_style = "darker"
--- vim.cmd 'colorscheme material'
-vim.opt.fillchars = {
-  horiz     = '█',
-  horizup   = '█',
-  horizdown = '█',
-  vert      = '█',
-  vertleft  = '█',
-  vertright = '█',
-  verthoriz = '█',
-}
--- vim.cmd('colorscheme aurora')
-vim.cmd('colorscheme middlenight_blue')
--- vim.cmd('colorscheme purpura')
--- vim.cmd('colorscheme dracula')
-vim.cmd('set background=dark')
-vim.cmd('set termguicolors')
--- vim.cmd 'colorscheme tokyonight'
--- vim.cmd 'colorscheme gruvbox'
--- vim.cmd 'colorscheme github_dark'
+-- local runtime_path = vim.split(package.path, ';')
+-- table.insert(runtime_path, "lua/?.lua")
+-- table.insert(runtime_path, "lua/?/init.lua")
 
-
-
-vim.g.floaterm_width = 0.95
-vim.g.floaterm_height = 0.95
-vim.keymap.set('n', '<leader>g', ':FloatermNew lazygit<CR>')
-
-
-cmd('set foldmethod=expr')
-cmd('set foldexpr=nvim_treesitter#foldexpr()')
-
-vim.keymap.set('n', '<leader>n', ':tabe ~/tmp/notes.md<CR>')
-
-local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-parser_config.cds = {
-  install_info = {
-    -- local path or git repo
-    url = "~/apps/tree-sitter-cds",
-    files = { "src/parser.c", "src/scanner.c" }
-  },
-  filetype = "cds",
-  -- additional filetypes that use this parser
-  used_by = { "cdl", "hdbcds" }
-}
-
-require 'nvim-treesitter.configs'.setup {
-  -- A list of parser names, or "all" (the four listed parsers should always be installed)
-  ensure_installed = {
-    "bash",
-    "c",
-    "go",
-    "help",
-    "html",
-    "javascript",
-    "json",
-    "lua",
-    "markdown",
-    "markdown_inline",
-    "python",
-    "query",
-    "regex",
-    "rust",
-    "tsx",
-    "typescript",
-    "vim",
-    "vue",
-    "yaml",
-  },
-
-  -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = false,
-
-  -- Automatically install missing parsers when entering buffer
-  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-  auto_install = true,
-
-  highlight = {
-    enable = true,
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-  -- indent = {
-  --   enable = true
-  -- },
-  endwise = {
-    enabled = true
-  }
-}
--- mfussenegger/nvim-dap
--- local dap = require('dap')
--- dap.adapters.node2 = {
---   type = 'executable',
---   command = 'node',
---   args = { os.getenv('HOME') .. '/apps/node/out/src/nodeDebug.js' },
+-- require 'lspconfig'.lua_ls.setup {
+--   capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+--   cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
+--   settings = {
+--     Lua = {
+--       runtime = {
+--         -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+--         version = 'LuaJIT',
+--         -- Setup your lua path
+--         path = runtime_path,
+--       },
+--       diagnostics = {
+--         -- Get the language server to recognize the `vim` global
+--         globals = { 'vim' },
+--       },
+--       workspace = {
+--         -- Make the server aware of Neovim runtime files
+--         library = vim.api.nvim_get_runtime_file("", true),
+--       },
+--       -- Do not send telemetry data containing a randomized but unique identifier
+--       telemetry = {
+--         enable = false,
+--       },
+--     },
+--   },
 -- }
 
--- -- require('dap').set_log_level('INFO')
--- dap.defaults.fallback.terminal_win_cmd = '20split new'
--- vim.fn.sign_define('DapBreakpoint', { text = '🟥', texthl = '', linehl = '', numhl = '' })
--- vim.fn.sign_define('DapBreakpointRejected', { text = '🟦', texthl = '', linehl = '', numhl = '' })
--- vim.fn.sign_define('DapStopped', { text = '⭐️', texthl = '', linehl = '', numhl = '' })
-
--- vim.keymap.set('n', '<leader>dh', function() require "dap".toggle_breakpoint() end)
--- vim.keymap.set('n', '<leader>dH', ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
--- vim.keymap.set('n', '<A-k>', function() require "dap".step_out() end)
--- vim.keymap.set('n', "<A-l>", function() require "dap".step_into() end)
--- vim.keymap.set('n', '<A-j>', function() require "dap".step_over() end)
--- vim.keymap.set('n', '<A-h>', function() require "dap".continue() end)
--- vim.keymap.set('n', '<leader>dn', function() require "dap".run_to_cursor() end)
--- vim.keymap.set('n', '<leader>dc', function() require "dap".terminate() end)
--- vim.keymap.set('n', '<leader>dR', function() require "dap".clear_breakpoints() end)
--- vim.keymap.set('n', '<leader>de', function() require "dap".set_exception_breakpoints({ "all" }) end)
--- vim.keymap.set('n', '<leader>da', function() require "debugHelper".attach() end)
--- vim.keymap.set('n', '<leader>dA', function() require "debugHelper".attachToRemote() end)
--- vim.keymap.set('n', '<leader>di', function() require "dap.ui.widgets".hover() end)
--- vim.keymap.set('n', '<leader>d?',
---   function()
---     local widgets = require "dap.ui.widgets";
---     widgets.centered_float(widgets.scopes)
---   end)
--- vim.keymap.set('n', '<leader>dk', ':lua require"dap".up()<CR>zz')
--- vim.keymap.set('n', '<leader>dj', ':lua require"dap".down()<CR>zz')
--- vim.keymap.set('n', '<leader>dr', ':lua require"dap".repl.toggle({}, "vsplit")<CR><C-w>l')
-
--- nvim-telescope/telescope-dap.nvim
--- require('telescope').load_extension('dap')
--- vim.keymap.set('n', '<leader>ds', ':Telescope dap frames<CR>')
--- -- vim.keymap.set('n', '<leader>dc', ':Telescope dap commands<CR>')
--- vim.keymap.set('n', '<leader>db', ':Telescope dap list_breakpoints<CR>')
-
--- require('nvim-dap-virtual-text').setup()
-
--- David-Kunz/jester
--- require 'jester'.setup({ path_to_jest = "/usr/local/bin/jest" })
--- vim.keymap.set('n', '<leader>tt', function() require "jester".run() end)
--- vim.keymap.set('n', '<leader>t_', function() require "jester".run_last() end)
--- vim.keymap.set('n', '<leader>tf', function() require "jester".run_file() end)
--- vim.keymap.set('n', '<leader>d_', function() require "jester".debug_last() end)
--- vim.keymap.set('n', '<leader>df', function() require "jester".debug_file() end)
--- vim.keymap.set('n', '<leader>dq', function() require "jester".terminate() end)
--- vim.keymap.set('n', '<leader>dd', function() require "jester".debug() end)
-
--- lua language server
-local system_name
-if vim.fn.has("mac") == 1 then
-  system_name = "macOS"
-elseif vim.fn.has("unix") == 1 then
-  system_name = "Linux"
-elseif vim.fn.has('win32') == 1 then
-  system_name = "Windows"
-else
-  print("Unsupported system for sumneko")
-end
-
--- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
-local sumneko_root_path = os.getenv('HOME') .. '/apps/lua-language-server'
-local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
-
-local runtime_path = vim.split(package.path, ';')
-table.insert(runtime_path, "lua/?.lua")
-table.insert(runtime_path, "lua/?/init.lua")
-
-require 'lspconfig'.lua_ls.setup {
-  capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-  cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
-  settings = {
-    Lua = {
-      runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT',
-        -- Setup your lua path
-        path = runtime_path,
-      },
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = { 'vim' },
-      },
-      workspace = {
-        -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file("", true),
-      },
-      -- Do not send telemetry data containing a randomized but unique identifier
-      telemetry = {
-        enable = false,
-      },
-    },
-  },
-}
-
-vim.keymap.set('n', '[b', ':bnext<CR>')
-vim.keymap.set('n', ']b', ':bprev<CR>')
-
--- David-Kunz/treesitter-unit
--- vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
--- vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select()<CR>')
--- vim.keymap.set('x', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
--- vim.keymap.set('o', 'u', ':<c-u>lua require"treesitter-unit".select(true)<CR>')
--- require"treesitter-unit".enable_highlighting()
-
--- local tunit = require'treesitter-unit'
--- vim.keymap.set('x', 'iu', function() require'treesitter-unit'.select() end)
--- vim.keymap.set('x', 'au', function() require'treesitter-unit'.select(true) end)
--- vim.keymap.set('o', 'iu', function() require'treesitter-unit'.select() end)
--- vim.keymap.set('o', 'au', function() require'treesitter-unit'.select(true) end)
-
--- custom folder icon
-require 'nvim-web-devicons'.setup({
-  override = {
-    lir_folder_icon = {
-      icon = "",
-      color = "#7ebae4",
-      name = "LirFolderNode"
-    },
-  }
-})
--- use visual mode
-function _G.LirSettings()
-  vim.api.nvim_buf_set_keymap(0, 'x', 'J', ':<C-u>lua require"lir.mark.actions".toggle_mark("v")<CR>',
-    { noremap = true, silent = true })
-
-  -- echo cwd
-  vim.api.nvim_echo({ { vim.fn.expand('%:p'), 'Normal' } }, false, {})
-end
-
-vim.cmd [[augroup lir-settings]]
-vim.cmd [[  autocmd!]]
-vim.cmd [[  autocmd Filetype lir :lua LirSettings()]]
-vim.cmd [[augroup END]]
-
--- global mark I for last edit
-vim.cmd [[autocmd InsertLeave * execute 'normal! mI']]
-
--- highlight on yank
-vim.cmd([[au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}]])
-
--- kyazdani42/nvim-tree.lua
-require('nvim-tree').setup({
-  hijack_cursor = true,
-  update_focused_file = { enable = true },
-  view = {
-    width = 40
-  }
-})
-vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', { silent = true })
-
-vim.keymap.set('n', 'gq', ':bd!<CR>')
-vim.keymap.set('n', '<leader>w', ':w<CR>')
-
-vim.cmd('iabbrev :tup: 👍')
-vim.cmd('iabbrev :tdo: 👎')
-vim.cmd('iabbrev :smi: 😊')
-vim.cmd('iabbrev :sad: 😔')
-vim.cmd('iabbrev darkred #8b0000')
-vim.cmd('iabbrev darkgreen #006400')
-
-_G.term_buf_of_tab = _G.term_buf_of_tab or {}
-_G.term_buf_max_nmb = _G.term_buf_max_nmb or 0
-
-function spawn_terminal()
-  local cur_tab = vim.api.nvim_get_current_tabpage()
-  vim.cmd('vs | terminal')
-  local cur_buf = vim.api.nvim_get_current_buf()
-  _G.term_buf_max_nmb = _G.term_buf_max_nmb + 1
-  vim.api.nvim_buf_set_name(cur_buf, "Terminal " .. _G.term_buf_max_nmb)
-  table.insert(_G.term_buf_of_tab, cur_tab, cur_buf)
-  vim.cmd(':startinsert')
-end
-
-function toggle_terminal()
-  local cur_tab = vim.api.nvim_get_current_tabpage()
-  local term_buf = term_buf_of_tab[cur_tab]
-  if term_buf ~= nil then
-    local cur_buf = vim.api.nvim_get_current_buf()
-    if cur_buf == term_buf then
-      vim.cmd('q')
-    else
-      vim.cmd('vert sb' .. term_buf)
-      vim.cmd(':startinsert')
-    end
-  else
-    spawn_terminal()
-    vim.cmd(':startinsert')
-  end
-end
-
-vim.keymap.set('n', '<c-y>', toggle_terminal)
-vim.keymap.set('i', '<c-y>', '<ESC>:lua toggle_terminal()<CR>')
-vim.keymap.set('t', '<c-y>', '<c-\\><c-n>:lua toggle_terminal()<CR>')
--- cmd([[
--- if has('nvim')
---    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
--- endif]])
-
-_G.send_line_to_terminal = function()
-  local curr_line = vim.api.nvim_get_current_line()
-  local cur_tab = vim.api.nvim_get_current_tabpage()
-  local term_buf = term_buf_of_tab[cur_tab]
-  if term_buf == nil then
-    spawn_terminal()
-    term_buf = term_buf_of_tab[cur_tab]
-  end
-  for _, chan in pairs(vim.api.nvim_list_chans()) do
-    if chan.buffer == term_buf then
-      chan_id = chan.id
-    end
-  end
-  vim.api.nvim_chan_send(chan_id, curr_line .. '\n')
-end
-
-vim.keymap.set('n', '<leader>x', ':lua send_line_to_terminal()<CR>')
-
-require "nvim-treesitter.configs".setup {
-  playground = {
-    enable = true,
-  }
-}
-
-vim.keymap.set('n', '<c-o>', '<c-o>zz')
-vim.keymap.set('n', '<c-i>', '<c-i>zz')
-
--- 'L3MON4D3/LuaSnip'
-local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
--- lualine
-
-require('lualine').setup {
-  options = {
-    icons_enabled = true,
-    theme = 'auto',
-    component_separators = { left = '', right = '' },
-    section_separators = { left = '', right = '' },
-    disabled_filetypes = {
-      statusline = {},
-      winbar = {},
-    },
-    ignore_focus = {},
-    always_divide_middle = true,
-    globalstatus = false,
-    refresh = {
-      statusline = 1000,
-      tabline = 1000,
-      winbar = 1000,
-    }
-  },
-  sections = {
-    lualine_a = { 'mode' },
-    lualine_b = { 'branch', 'diff', 'diagnostics' },
-    lualine_c = { 'filename' },
-    lualine_x = { 'encoding', 'fileformat', 'filetype' },
-    lualine_y = { 'progress' },
-    lualine_z = { 'location' }
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = { 'filename' },
-    lualine_x = { 'location' },
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {},
-  winbar = {},
-  inactive_winbar = {},
-  extensions = {}
-}
-
-require('colorizer').setup()
-
--- ldelossa/gh.nvim
--- require('litee.lib').setup()
--- require('litee.gh').setup({
---   prefer_https_remote = true
--- })
+-- vim.keymap.set('n', '[b', ':bnext<CR>')
+-- vim.keymap.set('n', ']b', ':bprev<CR>')
 
 -- go.nvim
 require('go').setup({
@@ -909,21 +641,5 @@ require('go').setup({
     capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
   },
 })
--- require("go.format").gofmt()  -- gofmt only
--- require("go.format").goimport()  -- goimport + gofmt
-
--- nvim-telescope/telescope-ui-select.nvim
-require("telescope").load_extension("ui-select")
-
--- require("github-theme").setup({
---   theme_style = "dark",
--- })
-
-vim.keymap.set('i', '<c-o>', '<esc><s-o>')
-vim.keymap.set('n', '<leader>p', ':PackerSync<CR>')
--- vim.api.nvim_create_autocmd('BufHidden',  {
---     pattern  = '[dap-terminal]*',
---     callback = function(arg)
---       vim.schedule(function() vim.api.nvim_buf_delete(arg.buf, { force = true }) end)
---     end
--- })
+-- require("go.format").gofmt() -- gofmt only
+require("go.format").goimport() -- goimport + gofmt
