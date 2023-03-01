@@ -8,7 +8,6 @@ vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'David-Kunz/cmp-npm'
   use 'David-Kunz/treesitter-unit'
-  use 'marko-cerovac/material.nvim'
   use 'Mofiqul/dracula.nvim'
   use 'folke/tokyonight.nvim'
   use 'hrsh7th/cmp-buffer'
@@ -20,6 +19,7 @@ require('packer').startup(function(use)
   use 'kyazdani42/nvim-tree.lua'
   use 'kyazdani42/nvim-web-devicons'
   use 'lewis6991/gitsigns.nvim'
+  use 'marko-cerovac/material.nvim'
   use 'mhartington/formatter.nvim'
   use 'neovim/nvim-lspconfig'
   use 'norcalli/nvim-colorizer.lua'
@@ -40,6 +40,8 @@ require('packer').startup(function(use)
   use 'williamboman/mason-lspconfig.nvim'
   use 'williamboman/mason.nvim'
   use 'windwp/nvim-autopairs'
+  use 'windwp/nvim-ts-autotag'
+  use 'yamatsum/nvim-cursorline'
   use 'yassinebridi/vim-purpura'
   use { 'L3MON4D3/LuaSnip', tag = 'v<CurrentMajor>.*', run = 'make install_jsregexp', requires = {
     "rafamadriz/friendly-snippets",
@@ -192,6 +194,19 @@ require("navigator").setup({
   }
 })
 
+require('nvim-cursorline').setup {
+  cursorline = {
+    enable = true,
+    timeout = 1000,
+    number = false,
+  },
+  cursorword = {
+    enable = true,
+    min_length = 3,
+    hl = { underline = true },
+  }
+}
+
 require 'nvim-treesitter.configs'.setup({
   -- A list of parser names, or "all" (the four listed parsers should always be installed)
   ensure_installed = {
@@ -208,7 +223,7 @@ require 'nvim-treesitter.configs'.setup({
     "python",
     "query",
     "regex",
-    "rust",
+    -- "rust",
     "tsx",
     "typescript",
     "vim",
@@ -233,6 +248,9 @@ require 'nvim-treesitter.configs'.setup({
   },
   endwise = {
     enabled = true
+  },
+  autotag = {
+    enable = true,
   }
 })
 
@@ -254,6 +272,7 @@ npairs.setup({
     java = false, -- don't check treesitter on java
   },
   disable_filetype = { "TelescopePrompt", "guihua", "guihua_rust", "clap_input" },
+  enable_check_bracket_line = false,
 })
 local ts_conds = require('nvim-autopairs.ts-conds')
 
@@ -336,6 +355,12 @@ cmp.setup({
   --   format = lspkind.cmp_format({with_text = false, maxwidth = 50})
   -- }
 })
+-- Integrate nvim-cmp with nvim-autopairs
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
 
 
 -- Configure UFO using Treesitter
@@ -486,23 +511,23 @@ require('formatter').setup({
     python = {
       require("formatter.filetypes.python").autopep8,
     },
-    rust = {
-      function()
-        return {
-          exe = "rustfmt",
-          stdin = true
-        }
-      end
-    },
-    sql = {
-      function()
-        return {
-          exe = "sqlformat",
-          args = { vim.api.nvim_buf_get_name(0), '-a' },
-          stdin = true
-        }
-      end
-    },
+    -- rust = {
+    --   function()
+    --     return {
+    --       exe = "rustfmt",
+    --       stdin = true
+    --     }
+    --   end
+    -- },
+    -- sql = {
+    --   function()
+    --     return {
+    --       exe = "sqlformat",
+    --       args = { vim.api.nvim_buf_get_name(0), '-a' },
+    --       stdin = true
+    --     }
+    --   end
+    -- },
     -- Use the special "*" filetype for defining formatter configurations on
     -- any filetype
     ["*"] = {
