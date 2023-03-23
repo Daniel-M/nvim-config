@@ -82,6 +82,12 @@ cmd('filetype plugin on')
 -- g.netrw_liststyle = 3
 -- g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
 
+-- folds ufo
+opt.foldcolumn = '1' -- '0' is not bad
+opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+opt.foldlevelstart = 99
+opt.foldenable = true
+
 -- -- opt.path:append({ "**" })
 -- vim.cmd([[set path=$PWD/**]])
 -- vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
@@ -119,28 +125,33 @@ require("mason-lspconfig").setup({
   }
 })
 
--- local lspconfig = require('lspconfig')
--- local lsp_defaults = lspconfig.util.default_config
+-- local nvim_lsp = require 'lspconfig'
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- -- capabilities.textDocument.foldingRange = {
+-- --   dynamicRegistration = false,
+-- --   lineFoldingOnly = true
+-- -- }
+-- local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
+-- for _, lsp in ipairs(servers) do
+--   nvim_lsp[lsp].setup {
+--     capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+--   }
+-- end
 
--- lsp_defaults.capabilities = vim.tbl_deep_extend(
---   'force',
---   lsp_defaults.capabilities,
---   require('cmp_nvim_lsp').default_capabilities()
--- )
---
-
+-- Other option to configure UFO using LSP
 local nvim_lsp = require 'lspconfig'
 local capabilities = vim.lsp.protocol.make_client_capabilities()
--- capabilities.textDocument.foldingRange = {
---   dynamicRegistration = false,
---   lineFoldingOnly = true
--- }
+capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true
+}
 local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
   }
 end
+require('ufo').setup()
 
 nvim_lsp.lua_ls.setup({})
 
@@ -244,7 +255,7 @@ require 'nvim-treesitter.configs'.setup({
     additional_vim_regex_highlighting = false,
   },
   indent = {
-    enable = true
+    enable = false -- disable indent with ufo 
   },
   endwise = {
     enabled = true
@@ -364,11 +375,11 @@ cmp.event:on(
 
 
 -- Configure UFO using Treesitter
-require('ufo').setup({
-  provider_selector = function(bufnr, filetype, buftype)
-    return { 'treesitter', 'indent' }
-  end
-})
+-- require('ufo').setup({
+--   provider_selector = function(bufnr, filetype, buftype)
+--     return { 'treesitter', 'indent' }
+--   end
+-- })
 
 -- Other option to configure UFO using LSP
 -- local nvim_lsp = require 'lspconfig'
