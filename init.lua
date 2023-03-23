@@ -48,7 +48,8 @@ require('packer').startup(function(use)
     "molleweide/LuaSnip-snippets.nvim",
   }, }
   use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
-  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run =
+  'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use { 'ray-x/guihua.lua', run = 'cd lua/fzy && make' }
 end
@@ -84,7 +85,7 @@ cmd('filetype plugin on')
 
 -- folds ufo
 opt.foldcolumn = '1' -- '0' is not bad
-opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+opt.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
 opt.foldlevelstart = 99
 opt.foldenable = true
 
@@ -102,27 +103,46 @@ vim.cmd('set termguicolors')
 -- -- vim.cmd 'colorscheme gruvbox'
 -- -- vim.cmd 'colorscheme github_dark'
 
+local lsp_servers = {
+  "ansiblels",
+  "bashls",
+  "clangd",
+  -- "cmake",
+  "cssls",
+  "unocss",
+  "dockerls",
+  "docker_compose_language_service",
+  "eslint",
+  "golangci_lint_ls",
+  "gopls",
+  "graphql",
+  "html",
+  -- "hls",
+  "quick_lint_js",
+  "tsserver",
+  "texlab",
+  "lua_ls",
+  "marksman",
+  -- "spectral",
+  "prismals",
+  "jedi_language_server",
+  -- "pyre",
+  "pyright",
+  -- "sourcery",
+  -- "pylsp",
+  "sqls",
+  "sqlls",
+  "tailwindcss",
+  "terraformls",
+  "vtsls",
+  "volar",
+  "vuels",
+  "yamlls",
+}
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = {
-    "bashls",
-    "docker_compose_language_service",
-    "dockerls",
-    "eslint",
-    "gopls",
-    "graphql",
-    "html",
-    "jsonls",
-    -- "pylsp",
-    "pyright",
-    "quick_lint_js",
-    "sqls",
-    "tsserver",
-    "volar",
-    "vuels",
-    "yamlls",
-  }
+  ensure_installed = lsp_servers
 })
 
 -- local nvim_lsp = require 'lspconfig'
@@ -145,8 +165,30 @@ capabilities.textDocument.foldingRange = {
   dynamicRegistration = false,
   lineFoldingOnly = true
 }
-local servers = { 'tsserver', 'gopls', 'pyright', 'pylsp', 'graphql', 'eslint' }
-for _, lsp in ipairs(servers) do
+-- local servers = {
+--   "ansible-language-server",
+--   "bash",
+--   "c",
+--   "go",
+--   "help",
+--   "html",
+--   "javascript",
+--   "json",
+--   "lua",
+--   "markdown",
+--   "markdown_inline",
+--   "python",
+--   "query",
+--   "regex",
+--   -- "rust",
+--   "tsx",
+--   "typescript",
+--   "vim",
+--   "vue",
+--   "yaml",
+-- }
+-- for _, lsp in ipairs(servers) do
+for _, lsp in ipairs(lsp_servers) do
   nvim_lsp[lsp].setup {
     capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
   }
@@ -223,18 +265,25 @@ require 'nvim-treesitter.configs'.setup({
   ensure_installed = {
     "bash",
     "c",
+    "css",
+    "gitcommit",
+    "gitignore",
     "go",
+    "haskell",
     "help",
     "html",
     "javascript",
+    "jsdoc",
     "json",
+    "latex",
     "lua",
     "markdown",
     "markdown_inline",
+    "prisma",
     "python",
     "query",
     "regex",
-    -- "rust",
+    "rust",
     "tsx",
     "typescript",
     "vim",
@@ -255,7 +304,7 @@ require 'nvim-treesitter.configs'.setup({
     additional_vim_regex_highlighting = false,
   },
   indent = {
-    enable = false -- disable indent with ufo 
+    enable = false -- disable indent with ufo
   },
   endwise = {
     enabled = true
@@ -280,7 +329,7 @@ npairs.setup({
   ts_config = {
     lua = { 'string' }, -- it will not add a pair on that treesitter node
     javascript = { 'template_string' },
-    java = false, -- don't check treesitter on java
+    java = false,       -- don't check treesitter on java
   },
   disable_filetype = { "TelescopePrompt", "guihua", "guihua_rust", "clap_input" },
   enable_check_bracket_line = false,
@@ -291,9 +340,9 @@ local ts_conds = require('nvim-autopairs.ts-conds')
 -- press % => %% only while inside a comment or string
 npairs.add_rules({
   Rule("%", "%", "lua")
-  :with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
+      :with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
   Rule("$", "$", "lua")
-  :with_pair(ts_conds.is_not_ts_node({ 'function' }))
+      :with_pair(ts_conds.is_not_ts_node({ 'function' }))
 })
 -- end nvim-autopairs config
 
@@ -312,11 +361,11 @@ cmp.setup({
     end,
   },
   sources = cmp.config.sources({
-    { name = 'path' },
-    { name = 'nvim_lsp', keyword_length = 1 },
-    { name = 'npm' },
-    { name = 'luasnip',  keyword_length = 2 }
-  },
+      { name = 'path' },
+      { name = 'nvim_lsp', keyword_length = 1 },
+      { name = 'npm' },
+      { name = 'luasnip',  keyword_length = 2 }
+    },
     {
       { name = 'buffer', keyword_length = 3 },
     }),
@@ -342,7 +391,7 @@ cmp.setup({
     ['<C-e>'] = cmp.mapping.abort(),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
-    ['<C-d>'] = cmp.mapping.scroll_docs( -4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
@@ -353,10 +402,9 @@ cmp.setup({
         fallback()
       end
     end, { "i", "s" }),
-
     ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if ls.jumpable( -1) then
-        ls.jump( -1)
+      if ls.jumpable(-1) then
+        ls.jump(-1)
       else
         fallback()
       end
@@ -580,10 +628,10 @@ require('telescope').setup {
       }
     },
     fzf = {
-      fuzzy = true, -- false will only do exact matching
+      fuzzy = true,                   -- false will only do exact matching
       override_generic_sorter = true, -- override the generic sorter
-      override_file_sorter = true, -- override the file sorter
-      case_mode = "smart_case", -- or "ignore_case" or "respect_case" the default case_mode is "smart_case"
+      override_file_sorter = true,    -- override the file sorter
+      case_mode = "smart_case",       -- or "ignore_case" or "respect_case" the default case_mode is "smart_case"
     }
   }
 }
