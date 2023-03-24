@@ -84,10 +84,15 @@ cmd('filetype plugin on')
 -- g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
 
 -- folds ufo
-opt.foldcolumn = '1' -- '0' is not bad
-opt.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
-opt.foldlevelstart = 99
-opt.foldenable = true
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+-- add lines to folded parts
+vim.o.statuscolumn =
+'%s%=%l %#FoldColumn#%{ foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? foldclosed(v:lnum) == -1 ? "-" : "+" : foldlevel(v:lnum) == 0 ? " " : "·" } '
+
 
 -- -- opt.path:append({ "**" })
 -- vim.cmd([[set path=$PWD/**]])
@@ -98,7 +103,8 @@ vim.cmd('colorscheme middlenight_blue')
 -- -- vim.cmd('colorscheme purpura')
 -- -- vim.cmd('colorscheme dracula')
 vim.cmd('set background=dark')
-vim.cmd('set termguicolors')
+-- vim.cmd('set termguicolors')
+vim.opt.termguicolors = true
 -- -- vim.cmd 'colorscheme tokyonight'
 -- -- vim.cmd 'colorscheme gruvbox'
 -- -- vim.cmd 'colorscheme github_dark'
