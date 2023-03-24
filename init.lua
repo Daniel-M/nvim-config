@@ -66,7 +66,7 @@ opt.expandtab = true
 opt.tabstop = 2
 opt.shiftwidth = 2
 opt.number = true
-opt.ignorecase = true
+opt.ignorecase = false -- Do not ignore lower/upper case when searching or matching
 opt.smartcase = true
 opt.incsearch = true
 opt.scrolloff = 15
@@ -256,7 +256,7 @@ require("navigator").setup({
 require('nvim-cursorline').setup {
   cursorline = {
     enable = true,
-    timeout = 1000,
+    timeout = 200,
     number = false,
   },
   cursorword = {
@@ -567,8 +567,25 @@ require('formatter').setup({
         }
       end
     },
+    vue = {
+      function()
+        return {
+          exe = "./node_modules/.bin/prettier",
+          args = { "--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi" },
+          stdin = true,
+        }
+      end,
+    },
     gql = {
-      require("formatter.filetypes.graphql").prettier,
+      -- require("formatter.filetypes.graphql").prettier,
+      function()
+        return {
+          exe = "./node_modules/.bin/prettier",
+          args = { "--stdin-filepath", vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), "--single-quote --no-semi" },
+          stdin = true,
+        }
+      end
+      ,
     },
     go = {
       require("formatter.filetypes.go").gofmt,
