@@ -30,11 +30,18 @@ require('packer').startup(function(use)
   use 'rafamadriz/friendly-snippets'
   use 'ray-x/aurora'
   use 'ray-x/go.nvim'
-  use 'ray-x/navigator.lua'
+  use({
+    'ray-x/navigator.lua',
+    requires = {
+      { 'ray-x/guihua.lua',     run = 'cd lua/fzy && make' },
+      { 'neovim/nvim-lspconfig' },
+    },
+  })
   use 'ray-x/starry.nvim'
   use 'ryanoasis/vim-devicons'
   use 'saadparwaiz1/cmp_luasnip'
   use 'tpope/vim-commentary'
+  use 'JoosepAlviste/nvim-ts-context-commentstring' --works with tpope/commentary and treesitter
   use 'tversteeg/registers.nvim'
   use 'wbthomason/packer.nvim'
   use 'williamboman/mason-lspconfig.nvim'
@@ -136,13 +143,12 @@ local lsp_servers = {
   "pyright",
   -- "sourcery",
   -- "pylsp",
-  "sqls",
   "sqlls",
   "tailwindcss",
   "terraformls",
   "vtsls",
   "volar",
-  "vuels",
+  -- "vuels",
   "yamlls",
 }
 
@@ -227,6 +233,7 @@ require('lualine').setup {
   sections = {
     lualine_a = { 'mode' },
     lualine_b = { 'branch', 'diff', 'diagnostics' },
+    -- lualine_b = { 'branch', 'diagnostics' },
     lualine_c = { 'filename' },
     lualine_x = { 'encoding', 'fileformat', 'filetype' },
     lualine_y = { 'progress' },
@@ -247,6 +254,25 @@ require('lualine').setup {
 }
 
 require("navigator").setup({
+  default_mapping = true,
+  treesitter_analysis = true,          -- treesitter variable context
+  treesitter_navigation = true,        -- bool|table false: use lsp to navigate between symbol ']r/[r', table: a list of
+  --lang using TS navigation
+  treesitter_analysis_max_num = 100,   -- how many items to run treesitter analysis
+  treesitter_analysis_condense = true, -- condense form for treesitter analysis
+  -- this value prevent slow in large projects, e.g. found 100000 reference in a project
+  transparency = 50,                   -- 0 ~ 100 blur the main window, 100: fully transparent, 0: opaque,  set to nil or 100 to disable it
+  lsp_signature_help = true,           -- if you would like to hook ray-x/lsp_signature plugin in navigator
+  -- setup here. if it is nil, navigator will not init signature help
+  signature_help_cfg = nil,            -- if you would like to init ray-x/lsp_signature plugin in navigator, and pass in your own config to signature help
+  icons = {
+    -- Code action
+    code_action_icon = "🏏", -- note: need terminal support, for those not support unicode, might crash
+    -- Diagnostics
+    diagnostic_head = '🐛',
+    diagnostic_head_severity_1 = "🈲",
+    -- refer to lua/navigator.lua for more icons setups
+  },
   mason = true,
   lsp = {
     disable_lsp = { 'flow' }, -- enabling flow breaks navigator with mason
@@ -317,7 +343,12 @@ require 'nvim-treesitter.configs'.setup({
   },
   autotag = {
     enable = true,
-  }
+  },
+  -- works with nvim-ts-context-commentstring and tpope/commentary
+  context_commentstring = {
+    enable = true,
+    enable_autocmd = false,
+  },
 })
 
 -- David-Kunz/treesitter-unit
