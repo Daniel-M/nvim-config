@@ -16,8 +16,10 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/nvim-cmp'
   use 'kevinhwang91/nvim-hlslens'
-  use 'kyazdani42/nvim-tree.lua'
-  use 'kyazdani42/nvim-web-devicons'
+  -- use 'kyazdani42/nvim-tree.lua'
+  -- use 'kyazdani42/nvim-web-devicons'
+  use 'nvim-tree/nvim-tree.lua'
+  use 'nvim-tree/nvim-web-devicons'
   use 'lewis6991/gitsigns.nvim'
   use 'marko-cerovac/material.nvim'
   use 'mhartington/formatter.nvim'
@@ -38,7 +40,7 @@ require('packer').startup(function(use)
     },
   })
   use 'ray-x/starry.nvim'
-  use 'ryanoasis/vim-devicons'
+  -- use 'ryanoasis/vim-devicons'
   use 'saadparwaiz1/cmp_luasnip'
   use 'tpope/vim-commentary'
   use 'JoosepAlviste/nvim-ts-context-commentstring' --works with tpope/commentary and treesitter
@@ -490,6 +492,9 @@ require('nvim-tree').setup({
   update_focused_file = { enable = true },
   view = {
     width = 40
+  },
+  filters = {
+    dotfiles = true
   }
 })
 vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', { silent = true })
