@@ -23,7 +23,10 @@ opt.tabstop = 2
 opt.softtabstop = 2
 
 opt.fillchars = { eob = " " }
-opt.ignorecase = true
+-- opt.ignorecase = true
+opt.ignorecase = false -- Do not ignore lower/upper case when searching or matching
+opt.incsearch = true
+opt.scrolloff = 15
 opt.smartcase = true
 opt.mouse = "a"
 
