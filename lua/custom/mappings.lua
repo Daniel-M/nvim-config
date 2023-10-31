@@ -1,12 +1,6 @@
----@type MappingsTable
 local M = {}
-
-M.general = {
-  n = {
-    [";"] = { ":", "enter command mode", opts = { nowait = true } },
-  },
+M.copilot = {
+  i = {
+    ["<C-j>"] = {"copilot#Accept(<CR>)"}
+  }
 }
-
--- more keybinds!
-
-return M
