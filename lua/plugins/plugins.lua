@@ -11,6 +11,12 @@ return {
 	},
 	{ "cappyzawa/trim.nvim", opts = {} },
 	{
+		"numToStr/Comment.nvim",
+		opts = {
+			-- add any options here
+		},
+	},
+	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.8",
 		opts = {},
