@@ -1,15 +1,25 @@
 return {
 	-- the colorscheme should be available when starting Neovim
 	{
-		"folke/tokyonight.nvim",
+		"rmehri01/onenord.nvim",
 		lazy = false, -- make sure we load this during startup if it is your main colorscheme
 		priority = 1000, -- make sure to load this before all the other start plugins
 		config = function()
 			-- load the colorscheme here
-			vim.cmd([[colorscheme tokyonight]])
+			vim.cmd([[colorscheme onenord]])
 		end,
 	},
-	{ "cappyzawa/trim.nvim", opts = {} },
+	{
+		"folke/tokyonight.nvim",
+		lazy = true, -- make sure we load this during startup if it is your main colorscheme
+		-- lazy = false, -- make sure we load this during startup if it is your main colorscheme
+		-- priority = 1000, -- make sure to load this before all the other start plugins
+		-- config = function()
+		-- 	-- load the colorscheme here
+		-- 	vim.cmd([[colorscheme tokyonight]])
+		-- end,
+	},
+	{ "cappyzawa/trim.nvim",         opts = {} },
 	{
 		"numToStr/Comment.nvim",
 		opts = {
@@ -23,20 +33,52 @@ return {
 		-- or                              , branch = "0.1.x",
 		-- dependencies = { "nvim-lua/plenary.nvim" }
 	},
-	{ "NvChad/nvim-colorizer.lua" },
+	{
+		"NvChad/nvim-colorizer.lua",
+		opts = {},
+	},
+	{ "nvim-tree/nvim-web-devicons", opts = {} },
 	{
 		"nvim-lualine/lualine.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
+		opts = {},
 	},
 	{
 		"ray-x/navigator.lua",
 		dependencies = {
-			{ "ray-x/guihua.lua", run = "cd lua/fzy && make" },
+			{ "ray-x/guihua.lua",               run = "cd lua/fzy && make" },
 			{ "neovim/nvim-lspconfig" },
+			{ "nvim-treesitter/nvim-treesitter" },
+		},
+		opts = {
+			mason = true,
 		},
 	},
 	{
+		"folke/which-key.nvim",
+		event = "VeryLazy",
+		opts = {
+			-- your configuration comes here
+			-- or leave it empty to use the default settings
+			-- refer to the configuration section below
+		},
+		keys = {
+			{
+				"<leader>?",
+				function()
+					require("which-key").show({ global = false })
+				end,
+				desc = "Buffer Local Keymaps (which-key)",
+			},
+		},
+	},
+	{ "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+	{
 		"williamboman/mason.nvim",
+		opts = {},
+	},
+	{
+		"williamboman/mason-lspconfig.nvim",
 		opts = {},
 	},
 	--{ "sbdchd/neoformat", cmd = { "Neoformat" }},
@@ -146,8 +188,6 @@ return {
 		},
 	},
 
-	{ "nvim-tree/nvim-web-devicons", lazy = true },
-
 	{ "folke/todo-comments.nvim", opts = {} },
 
 	{
@@ -197,48 +237,86 @@ return {
 			},
 		},
 	},
-	{
-		"folke/trouble.nvim",
-		opts = {}, -- for default options, refer to the configuration section for custom setup.
-		cmd = "Trouble",
-		keys = {
-			{
-				"<leader>xx",
-				"<cmd>Trouble diagnostics toggle<cr>",
-				desc = "Diagnostics (Trouble)",
-			},
-			{
-				"<leader>xX",
-				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-				desc = "Buffer Diagnostics (Trouble)",
-			},
-			{
-				"<leader>cs",
-				"<cmd>Trouble symbols toggle focus=false<cr>",
-				desc = "Symbols (Trouble)",
-			},
-			{
-				"<leader>cl",
-				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-				desc = "LSP Definitions / references / ... (Trouble)",
-			},
-			{
-				"<leader>xL",
-				"<cmd>Trouble loclist toggle<cr>",
-				desc = "Location List (Trouble)",
-			},
-			{
-				"<leader>xQ",
-				"<cmd>Trouble qflist toggle<cr>",
-				desc = "Quickfix List (Trouble)",
-			},
-		},
-	},
 
 	{
 		"zbirenbaum/copilot.lua",
 		cmd = "Copilot",
 		event = { "InsertEnter" },
-		opts = {},
+		opts = {
+			panel = {
+				enabled = true,
+				auto_refresh = false,
+				layout = {
+					position = "bottom", -- | top | left | right
+					ratio = 0.4,
+				},
+			},
+			suggestion = {
+				enabled = true,
+				auto_trigger = true,
+				hide_during_completion = true,
+				debounce = 75,
+				keymap = {
+					accept = "<Right>",
+					accept_word = false,
+					accept_line = false,
+					-- next = "<M-]>",
+					-- prev = "<M-[>",
+					dismiss = "<C-Esc>",
+				},
+			},
+			copilot_node_command = "node", -- Node.js version must be > 18.x
+			server_opts_overrides = {},
+		},
 	},
+
+	-- {
+	-- 	"zbirenbaum/copilot.lua",
+	-- 	cmd = "Copilot",
+	-- 	event = { "InsertEnter" },
+	-- 	opts = {
+	-- 		panel = {
+	-- 			enabled = true,
+	-- 			auto_refresh = false,
+	-- 			keymap = {
+	-- 				jump_prev = "[[",
+	-- 				jump_next = "]]",
+	-- 				accept = "<CR>",
+	-- 				refresh = "gr",
+	-- 				open = "<M-CR>",
+	-- 			},
+	-- 			layout = {
+	-- 				position = "bottom", -- | top | left | right
+	-- 				ratio = 0.4,
+	-- 			},
+	-- 		},
+	-- 		suggestion = {
+	-- 			enabled = true,
+	-- 			auto_trigger = false,
+	-- 			hide_during_completion = true,
+	-- 			debounce = 75,
+	-- 			keymap = {
+	-- 				accept = "<M-l>",
+	-- 				accept_word = false,
+	-- 				accept_line = false,
+	-- 				next = "<M-]>",
+	-- 				prev = "<M-[>",
+	-- 				dismiss = "<C-]>",
+	-- 			},
+	-- 		},
+	-- 		filetypes = {
+	-- 			yaml = false,
+	-- 			markdown = false,
+	-- 			help = false,
+	-- 			gitcommit = false,
+	-- 			gitrebase = false,
+	-- 			hgcommit = false,
+	-- 			svn = false,
+	-- 			cvs = false,
+	-- 			["."] = false,
+	-- 		},
+	-- 		copilot_node_command = "node", -- Node.js version must be > 18.x
+	-- 		server_opts_overrides = {},
+	-- 	},
+	-- },
 }
