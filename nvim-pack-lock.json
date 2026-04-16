@@ -28,9 +28,18 @@
       "rev": "ed77921e3f0bdf9e52cf9fab2e0f4c69ef2a7e04",
       "src": "https://github.com/ray-x/go.nvim"
     },
+    "grug-far.nvim": {
+      "rev": "21604255d0e8f9968322f61f2b6c09e5efe1285a",
+      "src": "https://github.com/MagicDuck/grug-far.nvim"
+    },
     "guihua.lua": {
       "rev": "d178056728548ed8a99cce94de47b7500bd6889a",
       "src": "https://github.com/ray-x/guihua.lua"
+    },
+    "harpoon": {
+      "rev": "87b1a3506211538f460786c23f98ec63ad9af4e5",
+      "src": "https://github.com/ThePrimeagen/harpoon",
+      "version": "'harpoon2'"
     },
     "lualine.nvim": {
       "rev": "a905eeebc4e63fdc48b5135d3bf8aea5618fb21c",
