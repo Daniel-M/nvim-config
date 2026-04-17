@@ -10,7 +10,7 @@ require("mini.basics").setup({
   },
   mappings = {
     basic = false,        -- we manage keymaps in keymaps.lua
-    option_toggle_prefix = [[\]],
+    option_toggle_prefix = ",",
     windows = false,
   },
   autocommands = { basic = true },
@@ -137,12 +137,9 @@ clue.setup({
     { mode = "n", keys = "g" },
     { mode = "x", keys = "g" },
     { mode = "n", keys = "'" },
-    { mode = "n", keys = "`" },
     { mode = "n", keys = '"' },
     { mode = "n", keys = "<C-w>" },
     { mode = "n", keys = "z" },
-    { mode = "n", keys = "[" },
-    { mode = "n", keys = "]" },
     { mode = "n", keys = "s" },
   },
   clues = {
@@ -156,6 +153,7 @@ clue.setup({
     { mode = "n", keys = "<Leader>g", desc = "+git" },
     { mode = "n", keys = "<Leader>l", desc = "+lsp" },
     { mode = "n", keys = "<Leader>b", desc = "+buffer" },
+    { mode = "n", keys = "<Leader>e", desc = "+errors/diagnostics" },
     { mode = "n", keys = "<Leader>m", desc = "+marks/harpoon" },
     { mode = "n", keys = "<Leader>s", desc = "+search/swap" },
   },

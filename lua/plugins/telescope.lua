@@ -102,6 +102,7 @@ _G.telescope_files_or_git_files = function()
   end
 end
 map("n", "<leader><space>", telescope_files_or_git_files, { desc = "Find: smart files (git/all)" })
+map("n", "<C-p>",          telescope_files_or_git_files, { desc = "Find: smart files (git/all)" })
 
 -- Find files / grep in a specific directory (prompts for path)
 _G.telescope_find_files_in_path = function(path)
@@ -115,5 +116,3 @@ end
 map("n", "<leader>fP", telescope_find_files_in_path, { desc = "Find: files in dir…" })
 map("n", "<leader>fD", telescope_live_grep_in_path,  { desc = "Find: grep in dir…" })
 
--- Ctrl-\ as extra buffers alias (from old config muscle memory)
-map("n", "<C-\\>", builtin.buffers, { desc = "Find: buffers" })

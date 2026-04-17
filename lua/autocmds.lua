@@ -61,6 +61,15 @@ autocmd("BufReadPost", {
   end,
 })
 
+-- Enable spell for prose filetypes
+autocmd("FileType", {
+  group = augroup("spell_prose", { clear = true }),
+  pattern = { "markdown", "text", "gitcommit", "plaintex", "rst" },
+  callback = function()
+    vim.opt_local.spell = true
+  end,
+})
+
 -- Filetype-specific indentation
 autocmd("FileType", {
   group = augroup("ft_indent", { clear = true }),

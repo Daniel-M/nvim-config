@@ -48,6 +48,10 @@ opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99           -- open all folds by default
 opt.foldtext = ""
 
+-- Spell
+opt.spelllang = "en_us"
+opt.spell = false  -- off by default for code; autocmd enables for prose filetypes
+
 -- Misc
 opt.mouse = "a"
 opt.breakindent = true

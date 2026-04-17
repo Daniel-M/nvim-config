@@ -44,6 +44,10 @@ require("gitsigns").setup({
       return "<Ignore>"
     end, "Git: prev hunk")
 
+    -- Hunk navigation leader alternatives (Spanish Mac: ]c/[c require Option key)
+    map("n", "<leader>gn", function() gs.next_hunk() end,  "Git: next hunk")
+    map("n", "<leader>gp", function() gs.prev_hunk() end,  "Git: prev hunk")
+
     -- Hunk operations
     map({ "n", "v" }, "<leader>hs", gs.stage_hunk,                            "Git: stage hunk")
     map({ "n", "v" }, "<leader>hr", gs.reset_hunk,                            "Git: reset hunk")

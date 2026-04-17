@@ -2,7 +2,7 @@
 local map = vim.keymap.set
 
 vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+vim.g.maplocalleader = ","
 
 -- Better movement in wrapped lines
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -38,13 +38,14 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
 -- Better paste (don't yank replaced text)
 map("v", "p", '"_dP', { desc = "Paste without yank" })
 
--- Quickfix / diagnostics navigation
-map("n", "[q", "<cmd>cprev<CR>", { desc = "Prev quickfix" })
-map("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix" })
-
 -- Save
 map({ "n", "i", "v" }, "<C-s>", "<cmd>w<CR><Esc>", { desc = "Save file" })
 map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
+
+-- Spell
+map("n", "<leader>us", function()
+  vim.opt_local.spell = not vim.opt_local.spell:get()
+end, { desc = "Toggle spell check" })
 
 -- Quit
 map("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit" })

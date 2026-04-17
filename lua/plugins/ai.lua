@@ -45,12 +45,12 @@ require("codeium").setup({
     enabled     = true,
     map_keys    = true,
     key_bindings = {
-      accept      = "<M-l>",   -- Alt-l: accept full suggestion
+      accept      = "<Tab>",    -- Tab: accept full suggestion (falls through from blink.cmp)
       accept_word = "<M-w>",   -- Alt-w: accept one word
       accept_line = false,
       clear       = "<M-e>",   -- Alt-e: dismiss
-      next        = "<M-]>",
-      prev        = "<M-[>",
+      next        = "<M-n>",
+      prev        = "<M-p>",
     },
   },
 })

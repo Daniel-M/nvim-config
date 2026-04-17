@@ -69,6 +69,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- Diagnostics
     map("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Prev diagnostic")
     map("n", "]d", function() vim.diagnostic.jump({ count = 1,  float = true }) end, "Next diagnostic")
+    -- Leader alternatives (Spanish Mac: ]d/[d require Option key)
+    map("n", "<leader>ep", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Prev diagnostic")
+    map("n", "<leader>en", function() vim.diagnostic.jump({ count = 1,  float = true }) end, "Next diagnostic")
     map("n", "<leader>ld", vim.diagnostic.open_float,    "LSP: Line diagnostics")
     map("n", "<leader>lD", vim.diagnostic.setloclist,    "LSP: Diagnostics list")
 

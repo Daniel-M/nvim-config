@@ -14,9 +14,17 @@ require("blink.cmp").setup({
   -- Keymap preset: <C-space> trigger, <CR> confirm, <C-e> cancel
   -- <Tab>/<S-Tab> select next/prev, <C-b>/<C-f> scroll docs
   keymap = {
-    preset = "default",
-    ["<Tab>"]   = { "select_next", "snippet_forward", "fallback" },
-    ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+    preset = "default",   -- provides <C-space> trigger, <C-n>/<C-p> navigation
+    ["<Tab>"] = {
+      function(cmp)
+        if cmp.snippet_active() then return cmp.accept() end
+        if cmp.is_visible() then return cmp.select_and_accept() end
+      end,
+      "fallback",   -- falls through to codeium ghost-text accept
+    },
+    ["<S-Tab>"] = { "snippet_backward", "fallback" },
+    ["<C-n>"]   = { "select_next", "fallback" },
+    ["<C-p>"]   = { "select_prev", "fallback" },
     ["<CR>"]    = { "accept", "fallback" },
     ["<C-e>"]   = { "cancel" },
     ["<C-b>"]   = { "scroll_documentation_up", "fallback" },
