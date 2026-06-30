@@ -6,7 +6,7 @@
 --
 -- Required external tools (install once):
 --   npm i -g @fsouza/prettierd        (faster prettier daemon)
---   pip install black isort
+--   uv add --dev ruff
 --   go install mvdan.cc/gofumpt@latest
 --   go install golang.org/x/tools/cmd/goimports@latest
 --   brew install stylua
@@ -24,7 +24,7 @@ require("conform").setup({
     graphql         = { "prettierd", "prettier", stop_after_first = true },
     html            = { "prettierd", "prettier", stop_after_first = true },
     css             = { "prettierd", "prettier", stop_after_first = true },
-    python          = { "isort", "black" },
+    python          = { "ruff_organize_imports", "ruff_format" },
     go              = { "gofumpt", "goimports" },
     lua             = { "stylua" },
     terraform       = { "terraform_fmt" },

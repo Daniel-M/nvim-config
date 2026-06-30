@@ -6,6 +6,7 @@
 vim.lsp.enable({
   "ts_ls",
   "pyright",
+  "ruff",
   "gopls",
   "lua_ls",
   "terraformls",
@@ -42,6 +43,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local buf = ev.buf
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+    -- Disable Ruff hover in favor of Pyright (avoid duplicate hover windows)
+    if client and client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+    end
+
     local map = function(mode, lhs, rhs, desc)
       vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc })
     end
