@@ -28,8 +28,8 @@ require("claudecode").setup({
 -- <leader>cb  add current buffer to Claude context
 -- <leader>cy  accept diff
 -- <leader>cn  deny diff
-vim.keymap.set("n",        "<leader>cc", "<cmd>ClaudeCode<CR>",
-  { desc = "Claude: toggle sidebar" })
+-- Custom command ClaudeCode is provided by the claudecode plugin to open the sidebar.
+-- <leader>cc mapping has been removed in favor of comments.
 vim.keymap.set("n",        "<leader>cf", "<cmd>ClaudeCodeFocus<CR>",
   { desc = "Claude: focus sidebar" })
 vim.keymap.set("v",        "<leader>cs", "<cmd>ClaudeCodeSend<CR>",

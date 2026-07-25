@@ -54,3 +54,25 @@ map("n", "<leader>Q", "<cmd>qa!<CR>", { desc = "Force quit all" })
 -- New line without insert mode
 map("n", "<leader>o", "o<Esc>", { desc = "New line below" })
 map("n", "<leader>O", "O<Esc>", { desc = "New line above" })
+
+-- Custom commands
+vim.api.nvim_create_user_command("VimPackUpdatePlugins", function()
+  vim.pack.update()
+end, { desc = "Update plugins via vim.pack" })
+
+vim.api.nvim_create_user_command("Agy", function()
+  vim.cmd("vsplit")
+  local width = math.floor(vim.o.columns * 0.30)
+  vim.cmd("vertical resize " .. width)
+  vim.cmd("terminal agy")
+  vim.cmd("startinsert")
+end, { desc = "Run Antigravity CLI (agy) in a 30% width side terminal" })
+
+-- Toggle comments with cc and <leader>cc
+map("n", "cc", "gcc", { remap = true, desc = "Comment: toggle line" })
+map("x", "cc", "gc", { remap = true, desc = "Comment: toggle selection" })
+map("n", "<leader>cc", "gcc", { remap = true, desc = "Comment: toggle line" })
+map("x", "<leader>cc", "gc", { remap = true, desc = "Comment: toggle selection" })
+
+
+
