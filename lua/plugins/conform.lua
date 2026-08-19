@@ -15,6 +15,8 @@ require("conform").setup({
   formatters_by_ft = {
     typescript      = { "prettierd", "prettier", stop_after_first = true },
     typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+    ts              = { "prettierd", "prettier", stop_after_first = true },
+    tsx             = { "prettierd", "prettier", stop_after_first = true },
     javascript      = { "prettierd", "prettier", stop_after_first = true },
     javascriptreact = { "prettierd", "prettier", stop_after_first = true },
     json            = { "prettierd", "prettier", stop_after_first = true },
@@ -29,14 +31,12 @@ require("conform").setup({
     lua             = { "stylua" },
     terraform       = { "terraform_fmt" },
   },
-  -- No format_on_save — use <leader>F explicitly.
-  -- To enable for specific filetypes, uncomment and customize:
-  -- format_on_save = function(bufnr)
-  --   local ft = vim.bo[bufnr].filetype
-  --   if vim.tbl_contains({ "go" }, ft) then
-  --     return { timeout_ms = 500, lsp_fallback = true }
-  --   end
-  -- end,
+  format_on_save = function(bufnr)
+    local ft = vim.bo[bufnr].filetype
+    if vim.tbl_contains({ "typescript", "typescriptreact", "ts", "tsx", "javascript", "javascriptreact" }, ft) then
+      return { timeout_ms = 500, lsp_fallback = true }
+    end
+  end,
   default_format_opts = { lsp_format = "fallback" },
   notify_on_error = true,
 })

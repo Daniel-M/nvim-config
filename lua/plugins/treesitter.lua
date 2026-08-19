@@ -11,6 +11,7 @@
 -- Optional setup (defaults are fine for most setups)
 require("nvim-treesitter").setup({
   -- install_dir = vim.fn.stdpath("data") .. "/site",  -- default
+  autotag = true,
 })
 
 -- Install parsers for the languages we use.

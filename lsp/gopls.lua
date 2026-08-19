@@ -27,6 +27,9 @@ return {
         parameterNames         = true,
         rangeVariableTypes     = true,
       },
+      ui = {
+        diagnosticSigns = true,
+      },
     },
   },
 }

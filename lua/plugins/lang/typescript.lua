@@ -5,7 +5,7 @@ require("tsc").setup({
   auto_open_qflist = true,
   auto_close_qflist = false,
   auto_focus_qflist = false,
-  auto_start_watch_mode = false,
+  auto_start_watch_mode = true,     -- watch for changes + show diagnostics
   use_trouble_qflist = false,
   spinner = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" },
   pretty_errors = true,

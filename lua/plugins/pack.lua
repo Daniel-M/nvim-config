@@ -10,6 +10,7 @@ vim.pack.add({
   -- Syntax highlighting and text objects
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+  "https://github.com/windwp/nvim-ts-autotag",
 
   -- LSP server config definitions (works with Neovim native LSP)
   "https://github.com/neovim/nvim-lspconfig",

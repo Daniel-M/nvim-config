@@ -19,6 +19,14 @@ return {
         includeInlayFunctionLikeReturnTypeHints = true,
         includeInlayEnumMemberValueHints      = true,
       },
+      suggest = {
+        completeUnimported = true,
+        includeCompletionsFromDelay = false,
+      },
+      preferences = {
+        importModuleSpecifier = "relative",
+        importModuleSpecifierEnding = "minimal",
+      },
     },
     javascript = {
       inlayHints = {

@@ -80,7 +80,7 @@ map("n", "<leader>fs", builtin.lsp_document_symbols,                { desc = "Fi
 map("n", "<leader>fS", builtin.lsp_dynamic_workspace_symbols,       { desc = "Find: workspace symbols" })
 map("n", "<leader>fd", builtin.diagnostics,                         { desc = "Find: diagnostics" })
 map("n", "<leader>fi", builtin.lsp_implementations,                 { desc = "Find: implementations" })
-map("n", "<leader>fR", builtin.lsp_references,                      { desc = "Find: references" })
+map("n", "<leader>fD", builtin.lsp_definitions,                 { desc = "Find: definitions" })
 map("n", "<leader>ft", builtin.lsp_type_definitions,                { desc = "Find: type definitions" })
 
 -- Git

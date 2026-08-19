@@ -5,6 +5,7 @@
 
 vim.lsp.enable({
   "ts_ls",
+  "eslint",
   "pyright",
   "ruff",
   "gopls",
@@ -54,11 +55,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     -- Navigation
-    map("n", "gd",         vim.lsp.buf.definition,       "LSP: Go to definition")
+    map("n", "gd",         function() vim.lsp.buf.definition({ border = "rounded" }) end, "LSP: Go to definition")
     map("n", "gD",         vim.lsp.buf.declaration,      "LSP: Go to declaration")
     map("n", "gi",         vim.lsp.buf.implementation,   "LSP: Go to implementation")
     map("n", "gy",         vim.lsp.buf.type_definition,  "LSP: Go to type definition")
-    map("n", "gr",         vim.lsp.buf.references,       "LSP: References")
+    map("n", "gr",         function() vim.lsp.buf.references({ border = "rounded" }) end, "LSP: References")
     map("n", "gK",         vim.lsp.buf.signature_help,   "LSP: Signature help")
 
     -- Hover documentation
