@@ -1,6 +1,9 @@
 -- lua/options.lua
 local opt = vim.opt
 
+-- Prepend ~/go/bin to PATH so Neovim sub-processes find gofumpt, gopls, goimports, etc.
+vim.env.PATH = vim.fn.expand("~/go/bin") .. ":" .. vim.env.PATH
+
 -- UI
 opt.number = true
 opt.relativenumber = true

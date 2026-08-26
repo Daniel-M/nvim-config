@@ -9,7 +9,6 @@ return {
       analyses = {
         unusedparams  = true,
         shadow        = true,
-        fieldalignment = true,
         nilness       = true,
         unusedwrite   = true,
         useany        = true,
@@ -26,9 +25,6 @@ return {
         functionTypeParameters  = true,
         parameterNames         = true,
         rangeVariableTypes     = true,
-      },
-      ui = {
-        diagnosticSigns = true,
       },
     },
   },

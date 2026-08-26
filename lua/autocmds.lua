@@ -14,7 +14,8 @@ autocmd("TextYankPost", {
 autocmd("BufWritePre", {
   group = augroup("trim_whitespace", { clear = true }),
   pattern = "*",
-  callback = function()
+  callback = function(ev)
+    if not vim.bo[ev.buf].modifiable then return end
     local save = vim.fn.winsaveview()
     vim.cmd([[keeppatterns %s/\s\+$//e]])
     vim.fn.winrestview(save)

@@ -30,16 +30,6 @@ require("go").setup({
   trouble = false,
 })
 
--- Format on save (also handled in lsp.lua for gopls, but go.nvim provides gofumpt)
-local go_grp = vim.api.nvim_create_augroup("go_nvim_format", { clear = true })
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = go_grp,
-  pattern = "*.go",
-  callback = function()
-    require("go.format").gofmt()
-  end,
-})
-
 -- Go-specific keymaps
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("go_keymaps", { clear = true }),
