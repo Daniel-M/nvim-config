@@ -4,6 +4,10 @@
       "rev": "b2e84d00db4d5432f471d58898e796b478f075a7",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
+    "blink-cmp-copilot": {
+      "rev": "439cff78780c033aa23cf061d7315314b347e3c1",
+      "src": "https://github.com/giuxtaposition/blink-cmp-copilot"
+    },
     "blink.cmp": {
       "rev": "37c96dc06032b3f128b230b5fb193706535b3811",
       "src": "https://github.com/Saghen/blink.cmp"
@@ -19,6 +23,10 @@
     "conform.nvim": {
       "rev": "086a40dc7ed8242c03be9f47fbcee68699cc2395",
       "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "copilot.lua": {
+      "rev": "1d674b416df08e5c54e442503b7703a0df462acf",
+      "src": "https://github.com/zbirenbaum/copilot.lua"
     },
     "gitsigns.nvim": {
       "rev": "8d82c240f190fc33723d48c308ccc1ed8baad69d",

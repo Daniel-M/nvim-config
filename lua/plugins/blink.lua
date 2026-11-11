@@ -69,12 +69,18 @@ require("blink.cmp").setup({
 
   -- Completion sources
   sources = {
-    default = { "lsp", "path", "snippets", "buffer" },
+    default = { "lsp", "path", "snippets", "buffer", "copilot" },
     providers = {
       lsp     = { name = "LSP",     score_offset = 5 },
       path    = { name = "Path",    score_offset = 3 },
       snippets = { name = "Snippet", score_offset = 4 },
       buffer  = { name = "Buffer",  score_offset = 0, max_items = 5 },
+      copilot = {
+        name = "Copilot",
+        module = "blink-cmp-copilot",
+        score_offset = 100,   -- rank Copilot suggestions above the other sources
+        async = true,         -- don't block the menu while Copilot responds
+      },
     },
   },
 

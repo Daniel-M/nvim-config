@@ -60,6 +60,11 @@ vim.pack.add({
   -- AI: chat panel + inline edits (needs ANTHROPIC_API_KEY when used)
   "https://github.com/olimorris/codecompanion.nvim",
 
+  -- AI: GitHub Copilot client (needs Node.js + `:Copilot auth`)
+  "https://github.com/zbirenbaum/copilot.lua",
+  -- blink.cmp source that puts Copilot suggestions in the completion menu
+  "https://github.com/giuxtaposition/blink-cmp-copilot",
+
   -- Markdown inline rendering
   "https://github.com/MeanderingProgrammer/render-markdown.nvim",
 

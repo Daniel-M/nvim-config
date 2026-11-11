@@ -117,6 +117,8 @@ Stored at: `~/.local/share/nvim/site/pack/core/opt/`
 | `AckslD/swenv.nvim` | Python virtual environment switcher |
 | `coder/claudecode.nvim` | AI: Claude Code embedded sidebar (uses local CLI auth) |
 | `olimorris/codecompanion.nvim` | AI: chat panel + inline edits (Anthropic) |
+| `zbirenbaum/copilot.lua` | AI: GitHub Copilot client (needs Node.js + `:Copilot auth`) |
+| `giuxtaposition/blink-cmp-copilot` | AI: blink.cmp source that shows Copilot suggestions in the completion menu |
 | `MeanderingProgrammer/render-markdown.nvim` | Renders headings, code blocks, tables, checkboxes inline |
 | `folke/trouble.nvim` | Project-wide diagnostics, symbols, and quickfix panel |
 | `MunifTanjim/nui.nvim` | UI dependency for package-info.nvim |
@@ -549,4 +551,5 @@ After opening Neovim for the first time:
 | `<leader>ac` | Toggle CodeCompanion chat panel | CodeCompanion |
 | `<leader>aa` | CodeCompanion action picker | CodeCompanion |
 | `<leader>ai` | CodeCompanion inline edit (Visual Mode) | CodeCompanion |
+| `<CR>` / `<Tab>` (menu open) | Accept a Copilot item from the blink menu | Copilot (via blink) |
 

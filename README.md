@@ -253,6 +253,12 @@ Embeds Claude Code directly in your editor. Relies on your active terminal authe
 #### Ghost Text (blink.cmp)
 - Inline ghost-text previews come from `blink.cmp` (`ghost_text`), showing the selected completion item inline.
 
+#### GitHub Copilot (copilot.lua + blink-cmp-copilot)
+- Copilot suggestions appear in the blink.cmp completion menu, ranked above the other sources (`score_offset = 100`). Accept them with the usual blink keys (`<CR>` / `<Tab>`).
+- Inline ghost text and the Copilot panel are disabled, so they don't clash with the menu.
+- First use: `:Copilot auth` and sign in with a GitHub account that has Copilot. Requires Node.js.
+- Config: `lua/plugins/copilot.lua` (client) and the `copilot` provider in `lua/plugins/blink.lua`.
+
 #### Antigravity CLI (agy)
 Run the Antigravity TUI directly in Neovim as a side terminal pane:
 - `:Agy` - Opens a vertical terminal split running `agy` constrained to 30% of your screen width.
