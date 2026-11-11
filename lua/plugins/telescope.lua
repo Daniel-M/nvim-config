@@ -84,9 +84,9 @@ map("n", "<leader>fD", builtin.lsp_definitions,                 { desc = "Find: 
 map("n", "<leader>ft", builtin.lsp_type_definitions,                { desc = "Find: type definitions" })
 
 -- Git
-map("n", "<leader>fgc", builtin.git_commits,                        { desc = "Find: git commits" })
-map("n", "<leader>fgb", builtin.git_branches,                       { desc = "Find: git branches" })
-map("n", "<leader>fgs", builtin.git_status,                         { desc = "Find: git status" })
+map("n", "<leader>fGc", builtin.git_commits,                        { desc = "Find: git commits" })
+map("n", "<leader>fGb", builtin.git_branches,                       { desc = "Find: git branches" })
+map("n", "<leader>fGs", builtin.git_status,                         { desc = "Find: git status" })
 
 -- Re-open last picker
 map("n", "<leader>fp", builtin.resume,                              { desc = "Find: resume last" })
@@ -114,5 +114,5 @@ _G.telescope_live_grep_in_path = function(path)
   builtin.live_grep({ search_dirs = { _path } })
 end
 map("n", "<leader>fP", telescope_find_files_in_path, { desc = "Find: files in dir…" })
-map("n", "<leader>fD", telescope_live_grep_in_path,  { desc = "Find: grep in dir…" })
+map("n", "<leader>fF", telescope_live_grep_in_path,  { desc = "Find: grep in dir…" })
 

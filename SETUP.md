@@ -75,7 +75,7 @@ Neovim version: **0.12.1** | macOS (Apple Silicon)
         ├── colorizer.lua           # Inline hex/rgb/tailwind color preview
         ├── markdown.lua            # Render Markdown inline
         ├── claudecode.lua          # Claude Code embedded sidebar
-        ├── ai.lua                  # CodeCompanion (Anthropic chat) & Windsurf (ghost text)
+        ├── ai.lua                  # CodeCompanion (Anthropic chat, claude-haiku-5-5)
         ├── grug-far.lua            # Project-wide search and replace
         ├── harpoon.lua             # Harpoon2 bookmarks
         ├── trouble.lua             # Diagnostics and symbols panel
@@ -117,7 +117,6 @@ Stored at: `~/.local/share/nvim/site/pack/core/opt/`
 | `AckslD/swenv.nvim` | Python virtual environment switcher |
 | `coder/claudecode.nvim` | AI: Claude Code embedded sidebar (uses local CLI auth) |
 | `olimorris/codecompanion.nvim` | AI: chat panel + inline edits (Anthropic) |
-| `Exafunction/windsurf.nvim` | AI: inline ghost-text completions (Codeium engine) |
 | `MeanderingProgrammer/render-markdown.nvim` | Renders headings, code blocks, tables, checkboxes inline |
 | `folke/trouble.nvim` | Project-wide diagnostics, symbols, and quickfix panel |
 | `MunifTanjim/nui.nvim` | UI dependency for package-info.nvim |
@@ -196,7 +195,7 @@ Enables servers via `vim.lsp.enable({...})`. `LspAttach` autocmd sets buffer-loc
 blink.cmp v1. Ghost text, auto-show docs, signature help, `mini.snippets` preset, sources: LSP > snippets > path > buffer.
 
 ### `lua/plugins/telescope.lua`
-All `<leader>f*` keymaps. Also adds smart `<leader><space>` (git_files/find_files), `<leader>fP` (find in dir), `<leader>fD` (grep in dir), `<C-\>` buffers alias. `fzf` extension loaded with pcall guard.
+All `<leader>f*` keymaps. Also adds smart `<leader><space>` (git_files/find_files), `<leader>fP` (find in dir), `<leader>fF` (grep in dir), `<C-\>` buffers alias. `fzf` extension loaded with pcall guard.
 
 ### `lua/plugins/git.lua`
 `gitsigns.nvim` with full hunk keymaps (`<leader>h*`), current-line blame, and `ih` text object. Replaces `mini.diff` (which was view-only).
@@ -217,7 +216,7 @@ Configures render-markdown.nvim to show rich preview formatting (headings, code 
 Embedded Claude Code sidebar controller. Integrates with the `claude` CLI WebSocket protocol to sync file edits and visual selections with cursor context.
 
 ### `lua/plugins/ai.lua`
-AI developer tools: CodeCompanion chat and inline editing mapped to `<leader>ac`/`<leader>aa`/`<leader>ai`, and Windsurf ghost-text configuration using Alt-key bindings to prevent Tab conflicts.
+AI developer tools: CodeCompanion chat and inline editing mapped to `<leader>ac`/`<leader>aa`/`<leader>ai`, using `claude-haiku-5-5` by default. Ghost-text completions are provided by blink.cmp (see `blink.lua`).
 
 ### `lua/plugins/grug-far.lua`
 Project-wide search and replace dashboard. Pre-fills searches using the word under cursor via `<leader>sw` and allows editing ripgrep arguments.
@@ -444,7 +443,7 @@ After opening Neovim for the first time:
 | `<leader>fr` | Recent files |
 | `<leader>f/` | Fuzzy search current buffer |
 | `<leader>fP` | Find files in specific directory (prompts) |
-| `<leader>fD` | Live grep in specific directory (prompts) |
+| `<leader>fF` | Live grep in specific directory (prompts) |
 | `<leader>fh` | Help tags |
 | `<leader>fc` | Commands |
 | `<leader>fk` | Keymaps |
@@ -463,7 +462,7 @@ After opening Neovim for the first time:
 | `gK` | Signature help |
 | `<leader>rn` | Rename symbol |
 | `<leader>ca` | Code action |
-| `<leader>f` | Format (LSP) |
+| `<leader>lf` | Format (LSP) |
 | `<leader>F` | Format (conform) |
 | `[d` / `]d` | Prev / next diagnostic |
 | `<leader>ld` | Line diagnostics float |
@@ -493,9 +492,9 @@ After opening Neovim for the first time:
 | `<leader>gb` | mini.git: line history |
 | `<leader>gd` | mini.git: diff source |
 | `ih` | Text object: inner hunk |
-| `<leader>fgc` | Git commits (Telescope) |
-| `<leader>fgb` | Git branches (Telescope) |
-| `<leader>fgs` | Git status (Telescope) |
+| `<leader>fGc` | Git commits (Telescope) |
+| `<leader>fGb` | Git branches (Telescope) |
+| `<leader>fGs` | Git status (Telescope) |
 
 ### Editing
 | Key | Action |
@@ -520,6 +519,7 @@ After opening Neovim for the first time:
 | `<C-hjkl>` | Window navigation |
 | `<leader>e` | Toggle file explorer |
 | `<leader>E` | Explorer: reveal current file |
+| `<leader>j` | Jump2D: label teleport (Normal / Visual) |
 
 ### Language-specific
 | Key | Action | Language |
@@ -549,8 +549,4 @@ After opening Neovim for the first time:
 | `<leader>ac` | Toggle CodeCompanion chat panel | CodeCompanion |
 | `<leader>aa` | CodeCompanion action picker | CodeCompanion |
 | `<leader>ai` | CodeCompanion inline edit (Visual Mode) | CodeCompanion |
-| `<M-l>` | Accept ghost-text suggestion | Windsurf (Codeium) |
-| `<M-w>` | Accept next word of suggestion | Windsurf (Codeium) |
-| `<M-e>` | Dismiss suggestion | Windsurf (Codeium) |
-| `<M-n>` / `<M-p>` | Next / previous suggestion | Windsurf (Codeium) |
 

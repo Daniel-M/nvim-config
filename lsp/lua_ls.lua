@@ -11,12 +11,12 @@ return {
         checkThirdParty = false,
         library = {
           vim.env.VIMRUNTIME,
-          vim.fn.stdpath("data") .. "/lazy",  -- if ever switching to lazy
+          vim.fn.stdpath("data") .. "/site/pack/core/opt",  -- vim.pack plugin dir
         },
       },
       diagnostics = {
         globals = { "vim", "MiniStatusline", "MiniFiles", "MiniGit",
-                    "MiniDiff", "MiniNotify", "MiniClue", "MiniIndentscope",
+                    "MiniNotify", "MiniClue", "MiniIndentscope",
                     "MiniBufremove", "MiniIcons" },
       },
       completion  = { callSnippet = "Replace" },

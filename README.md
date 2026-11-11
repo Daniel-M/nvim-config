@@ -44,7 +44,7 @@ Designed for Neovim **0.12.1+** on macOS (Apple Silicon).
         ├── colorizer.lua           # Inline hex/rgb/Tailwind color previews
         ├── markdown.lua            # Render Markdown styles inline
         ├── claudecode.lua          # Embedded Claude Code sidebar
-        ├── ai.lua                  # CodeCompanion & Windsurf configuration
+        ├── ai.lua                  # CodeCompanion configuration (Claude Haiku 5.5)
         ├── grug-far.lua            # Project-wide search and replace
         ├── harpoon.lua             # Harpoon2 quick-navigation bookmarks
         └── trouble.lua             # Diagnostics and symbols panels
@@ -164,7 +164,7 @@ You can jump block-by-block using semantic nodes:
 #### live_grep (ripgrep)
 - `<leader>fg` - Live grep in CWD (updates as you type).
 - `<leader>fw` - Grep word under cursor in CWD.
-- `<leader>fD` - Live grep in specific directory (prompts for path).
+- `<leader>fF` - Live grep in specific directory (prompts for path).
 - `<leader>fp` - Re-opens last Telescope picker with previous query.
 - Type `<C-q>` in any Telescope file/grep window to send matches to the quickfix list.
 
@@ -196,7 +196,7 @@ Select structure in visual or operator-pending mode:
   - `sr{old}{new}` - Replace surrounding.
   - In Visual mode: Highlight selection and press `sa"` to surround.
 - **Move Lines** (`mini.move`): Press `<A-j>`/`<A-k>` in Visual mode to move selections up/down, or `<A-h>`/`<A-l>` to slide selections left/right.
-- **Commenting** (`mini.comment`): `cc` or `gcc` comments the current line, `cc` or `gc` comments selection in Visual mode, and `gbc` applies block comments.
+- **Commenting** (`mini.comment`): `gcc` or `<leader>cc` comments the current line, `gc` or `<leader>cc` comments selection in Visual mode, and `gbc` applies block comments. (`cc` stays Vim's native "change line".)
 - **Split / Join Arguments** (`mini.splitjoin`): Press `gS` on any function call, array, or object literal to toggle between single-line and multiline formats.
 - **Swap Parameters**: Press `<leader>sp` / `<leader>sP` to swap the current parameter with the next / previous one.
 - **Auto-pairs** (`mini.pairs`): Automatically inserts matching brackets/quotes in Insert mode.
@@ -224,7 +224,7 @@ Instantly save and hop to active files (up to 4 slots per project):
 - `<leader>mn` / `<leader>mp` - Jump to next / previous Harpoon bookmark.
 
 #### Jump2D & Jump
-- Press `<CR>` in Normal/Visual mode to display labels on every 2-character spot on-screen. Type the label characters to teleport there (`mini.jump2d`).
+- Press `<leader>j` in Normal/Visual mode to display labels on every 2-character spot on-screen. Type the label characters to teleport there (`mini.jump2d`).
 - Press `f{char}` to jump to a character. Pressing `f` again will advance to the next match on the same line (`mini.jump`).
 
 #### Sessions (mini.sessions)
@@ -245,15 +245,13 @@ Embeds Claude Code directly in your editor. Relies on your active terminal authe
 - `<leader>cb` - Add current buffer content to Claude context.
 - `<leader>cy` / `<leader>cn` - Accept / deny a proposed diff from Claude.
 
-#### CodeCompanion & Windsurf
-- `<leader>ac` - Toggle CodeCompanion chat panel (requires `ANTHROPIC_API_KEY` set in shell).
+#### CodeCompanion
+- `<leader>ac` - Toggle CodeCompanion chat panel (requires `ANTHROPIC_API_KEY` set in shell). Default model: `claude-haiku-5-5`.
 - `<leader>aa` - Open CodeCompanion action prompt picker.
 - `<leader>ai` (Visual) - Inline edit selection using a prompt.
-- **Windsurf Ghost Text**: AI completions render inline.
-  - `<M-l>` - Accept suggestion.
-  - `<M-w>` - Accept next word.
-  - `<M-e>` - Dismiss suggestion.
-  - `<M-n>` / `<M-p>` - Next / previous suggestion.
+
+#### Ghost Text (blink.cmp)
+- Inline ghost-text previews come from `blink.cmp` (`ghost_text`), showing the selected completion item inline.
 
 #### Antigravity CLI (agy)
 Run the Antigravity TUI directly in Neovim as a side terminal pane:
@@ -267,7 +265,7 @@ Run the Antigravity TUI directly in Neovim as a side terminal pane:
 Completions (`blink.cmp`) pop up automatically. Completion sources run in priority order: **LSP → Snippets → Path → Buffer**.
 
 #### Completion Controls
-- `<Tab>` - Confirms current selection (or expands snippet) when completion menu is open. If menu is closed and ghost text is visible, accepts Windsurf suggestion. Otherwise, inserts a tab.
+- `<Tab>` - Confirms current selection (or expands snippet) when completion menu is open. Otherwise, inserts a tab.
 - `<S-Tab>` - Navigates backward in completion menu / snippet parameters.
 - `<CR>` - Confirms selection (inserts newline if menu is closed).
 - `<C-Space>` - Manually trigger completion.
@@ -314,10 +312,9 @@ Configure your terminal emulator so the **Left Option** key functions as Alt/Met
 Remaps built into this configuration to ease usage on Spanish keyboards:
 - `,` is the local leader key (replacing `\`).
 - `<C-p>` triggers the smart file finder (replacing `<C-\>`).
-- Windsurf next/prev shortcuts mapped to `<M-n>`/`<M-p>` (replacing `<M-]>`/`<M-[>`).
 - **Bracket Navigation Replacements**:
   - `]c` / `[c` (Hunks) ➡️ `<leader>gn` / `<leader>gp`
-  - `]d` / `[d` (Diagnostics) ➡️ `<leader>en` / `<leader>ep`
+  - `]d` / `[d` (Diagnostics) ➡️ `<leader>ln` / `<leader>lp`
 
 ---
 
@@ -331,10 +328,10 @@ Remaps built into this configuration to ease usage on Spanish keyboards:
 | `<leader><Space>` / `<C-p>` | Smart file picker | `<leader>ff` | Find files |
 | `<leader>fg` | Live grep (ripgrep) | `<leader>fw` | Grep word under cursor |
 | `<leader>fb` | Open buffers | `<leader>fr` | Recent files |
-| `<leader>fP` / `<leader>fD` | Find / Grep in path | `<leader>fv` / `fV` | Visited files (session / all) |
+| `<leader>fP` / `<leader>fF` | Find / Grep in path | `<leader>fv` / `fV` | Visited files (session / all) |
 | `<leader>e` / `<leader>E` | Explorer (toggle / curr file) | `<S-h>` / `<S-l>` | Previous / next buffer |
 | `<leader>bd` / `<leader>bD` | Delete buffer (safe / force) | `<C-hjkl>` | Navigate split windows |
-| `<C-Up/Down/Left/Right>` | Resize split windows | `<leader>q` / `Q` | Quit buffer / Quit all |
+| `<C-Up/Down/Left/Right>` | Resize split windows | `<leader>qq` / `Q` | Quit buffer / Quit all |
 
 ### LSP & Diagnostics
 | Key | Action | Key | Action |
@@ -342,7 +339,7 @@ Remaps built into this configuration to ease usage on Spanish keyboards:
 | `gd` / `gD` | Go to definition / declaration | `gi` / `gy` | Go to implementation / type |
 | `gr` | References | `K` / `gK` | Hover docs / Signature help |
 | `<leader>rn` | Rename symbol | `<leader>ca` | Code action |
-| `<leader>f` / `<leader>F` | Format (LSP / conform) | `]d` / `[d` (or `<leader>en`/`ep`) | Next / previous diagnostic |
+| `<leader>lf` / `<leader>F` | Format (LSP / conform) | `]d` / `[d` (or `<leader>ln`/`lp`) | Next / previous diagnostic |
 | `<leader>ld` / `<leader>lD` | Line diagnostics / Loclist | `<leader>lh` | Toggle inlay hints |
 | `<leader>xx` / `<leader>xb` | Trouble (workspace / buffer docs) | `<leader>xs` / `xq` | Trouble (symbols / quickfix) |
 
@@ -359,8 +356,8 @@ Remaps built into this configuration to ease usage on Spanish keyboards:
 ### Editing Actions
 | Key | Action | Key | Action |
 | --- | --- | --- | --- |
-| `cc` / `gc` / `gbc` | Comment line / block | `sa` / `sd` / `sr` | Surround add / delete / replace |
-| `<Tab>` / `<S-Tab>` | Completion / Snippet controls | `<CR>` | Jump2D label teleport (normal/visual) |
+| `gcc` / `<leader>cc` / `gbc` | Comment line / block | `sa` / `sd` / `sr` | Surround add / delete / replace |
+| `<Tab>` / `<S-Tab>` | Completion / Snippet controls | `<leader>j` | Jump2D label teleport (normal/visual) |
 | `<A-hjkl>` | Move line/selection (Visual) | `gS` | Split/join expression toggle |
 | `<leader>sp` / `sP` | Swap parameter next / prev | `<leader>us` | Toggle spell check |
 | `<leader>o` / `O` | Insert newline below / above | `p` (Visual) | Paste without yanking |
@@ -376,8 +373,7 @@ Remaps built into this configuration to ease usage on Spanish keyboards:
 | --- | --- | --- | --- |
 | `:ClaudeCode` / `cf` | Claude sidebar toggle / focus | `<leader>cs` / `cb` | Send selection / buffer to Claude |
 | `<leader>cy` / `cn` | Accept / deny Claude diff | `<leader>ac` / `aa` | CodeCompanion chat / actions |
-| `<leader>ai` (Visual) | CodeCompanion inline edit | `<M-l>` / `<M-w>` | Windsurf accept (all / word) |
-| `<M-e>` | Windsurf dismiss suggestion | `<M-n>` / `<M-p>` | Windsurf next / previous |
+| `<leader>ai` (Visual) | CodeCompanion inline edit | | |
 | `:Agy` | Open agy CLI in 30% side terminal split | | |
 
 

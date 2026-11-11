@@ -2,7 +2,7 @@
 -- conform.nvim: per-filetype formatters with LSP fallback.
 --
 -- <leader>F  → format via conform (falls back to LSP if no formatter found)
--- <leader>f  → LSP-native format only (from lsp.lua)
+-- <leader>lf → LSP-native format only (from lsp.lua)
 --
 -- Required external tools (install once):
 --   npm i -g @fsouza/prettierd        (faster prettier daemon)
@@ -34,7 +34,7 @@ require("conform").setup({
 	format_on_save = function(bufnr)
 		local ft = vim.bo[bufnr].filetype
 		if vim.tbl_contains({ "typescript", "typescriptreact", "ts", "tsx", "javascript", "javascriptreact", "go" }, ft) then
-			return { timeout_ms = 1000, lsp_format = "fallback" }
+			return { timeout_ms = 3000, lsp_format = "fallback" }
 		end
 	end,
 	default_format_opts = { lsp_format = "fallback" },

@@ -1,7 +1,7 @@
 -- lua/plugins/ai.lua
 -- codecompanion.nvim: AI chat panel backed by Anthropic (Claude).
 -- Requires ANTHROPIC_API_KEY in the shell environment.
--- windsurf.nvim (Exafunction): AI ghost-text completions.
+-- Ghost-text completions come from blink.cmp (see blink.lua).
 
 -- ── codecompanion ────────────────────────────────────────────────────────────
 -- Requires ANTHROPIC_API_KEY (separate from Claude Code subscription).
@@ -11,7 +11,7 @@ require("codecompanion").setup({
   adapters = {
     anthropic = function()
       return require("codecompanion.adapters").extend("anthropic", {
-        schema = { model = { default = "claude-sonnet-4-6" } },
+        schema = { model = { default = "claude-haiku-5-5" } },
       })
     end,
   },
@@ -25,7 +25,7 @@ require("codecompanion").setup({
   },
 })
 
--- <leader>cc  toggle chat panel
+-- <leader>ac  toggle chat panel
 -- <leader>aa  action picker (prompt library, slash commands)
 -- <leader>ai  inline code edit (visual selection → prompt)
 vim.keymap.set({ "n", "v" }, "<leader>ac", "<cmd>CodeCompanionChat Toggle<CR>",
@@ -34,23 +34,3 @@ vim.keymap.set({ "n", "v" }, "<leader>aa", "<cmd>CodeCompanionActions<CR>",
   { desc = "AI: actions" })
 vim.keymap.set("v", "<leader>ai", "<cmd>CodeCompanion<CR>",
   { desc = "AI: inline edit" })
-
--- ── windsurf (ghost-text) ─────────────────────────────────────────────────────
--- windsurf.nvim ships its Lua as the "codeium" module internally.
--- First use: run :Codeium Auth  to authenticate.
--- Uses Alt-l/Alt-w/Alt-e so that Tab stays free for blink.cmp.
-require("codeium").setup({
-  enable_cmp_source = false,   -- this config uses blink.cmp, not nvim-cmp
-  virtual_text = {
-    enabled     = true,
-    map_keys    = true,
-    key_bindings = {
-      accept      = "<M-l>",    -- Alt-l: accept suggestion
-      accept_word = "<M-w>",   -- Alt-w: accept one word
-      accept_line = false,
-      clear       = "<M-e>",   -- Alt-e: dismiss
-      next        = "<M-n>",
-      prev        = "<M-p>",
-    },
-  },
-})

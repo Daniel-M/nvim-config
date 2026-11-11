@@ -45,6 +45,9 @@ vim.pack.add({
   -- Per-filetype formatting (prettier, black, gofumpt) with LSP fallback
   "https://github.com/stevearc/conform.nvim",
 
+  -- Asynchronous linting (golangci-lint, etc.)
+  "https://github.com/mfussenegger/nvim-lint",
+
   -- Inline hex/rgb/hsl color preview (maintained fork of norcalli/nvim-colorizer.lua)
   "https://github.com/catgoose/nvim-colorizer.lua",
 
@@ -56,7 +59,6 @@ vim.pack.add({
 
   -- AI: chat panel + inline edits (needs ANTHROPIC_API_KEY when used)
   "https://github.com/olimorris/codecompanion.nvim",
-  "https://github.com/Exafunction/windsurf.nvim",
 
   -- Markdown inline rendering
   "https://github.com/MeanderingProgrammer/render-markdown.nvim",

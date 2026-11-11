@@ -48,7 +48,7 @@ map("n", "<leader>us", function()
 end, { desc = "Toggle spell check" })
 
 -- Quit
-map("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit" })
+map("n", "<leader>qq", "<cmd>q<CR>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qa!<CR>", { desc = "Force quit all" })
 
 -- New line without insert mode
@@ -68,9 +68,7 @@ vim.api.nvim_create_user_command("Agy", function()
   vim.cmd("startinsert")
 end, { desc = "Run Antigravity CLI (agy) in a 30% width side terminal" })
 
--- Toggle comments with cc and <leader>cc
-map("n", "cc", "gcc", { remap = true, desc = "Comment: toggle line" })
-map("x", "cc", "gc", { remap = true, desc = "Comment: toggle selection" })
+-- Toggle comments with <leader>cc (native cc stays "change line")
 map("n", "<leader>cc", "gcc", { remap = true, desc = "Comment: toggle line" })
 map("x", "<leader>cc", "gc", { remap = true, desc = "Comment: toggle selection" })
 

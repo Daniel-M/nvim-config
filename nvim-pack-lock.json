@@ -65,6 +65,10 @@
       "rev": "be2d7b2be01860b5445a007ff2bc72b29896db6b",
       "src": "https://github.com/kevinhwang91/nvim-hlslens"
     },
+    "nvim-lint": {
+      "rev": "3d55c8f67c6ae5c15e1042571e107c7a3d5c5f4e",
+      "src": "https://github.com/mfussenegger/nvim-lint"
+    },
     "nvim-lspconfig": {
       "rev": "d10ce09e42bb0ca8600fd610c3bb58676e61208d",
       "src": "https://github.com/neovim/nvim-lspconfig"
@@ -124,10 +128,6 @@
     "tsc.nvim": {
       "rev": "e083bcf1e54bc3af7df92b33235efb334e8c782c",
       "src": "https://github.com/dmmulroy/tsc.nvim"
-    },
-    "windsurf.nvim": {
-      "rev": "821b570b526dbb05b57aa4ded578b709a704a38a",
-      "src": "https://github.com/Exafunction/windsurf.nvim"
     }
   }
 }

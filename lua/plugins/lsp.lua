@@ -70,7 +70,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, "LSP: Code action")
 
     -- Format
-    map({ "n", "x" }, "<leader>f", function()
+    map({ "n", "x" }, "<leader>lf", function()
       vim.lsp.buf.format({ async = true })
     end, "LSP: Format buffer")
 
@@ -78,8 +78,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Prev diagnostic")
     map("n", "]d", function() vim.diagnostic.jump({ count = 1,  float = true }) end, "Next diagnostic")
     -- Leader alternatives (Spanish Mac: ]d/[d require Option key)
-    map("n", "<leader>ep", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Prev diagnostic")
-    map("n", "<leader>en", function() vim.diagnostic.jump({ count = 1,  float = true }) end, "Next diagnostic")
+    map("n", "<leader>lp", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Prev diagnostic")
+    map("n", "<leader>ln", function() vim.diagnostic.jump({ count = 1,  float = true }) end, "Next diagnostic")
     map("n", "<leader>ld", vim.diagnostic.open_float,    "LSP: Line diagnostics")
     map("n", "<leader>lD", vim.diagnostic.setloclist,    "LSP: Diagnostics list")
 
@@ -114,15 +114,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
     end
 
-    -- Format on save for Go (gofmt is canonical)
-    if client and client.name == "gopls" then
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        buffer = buf,
-        group = vim.api.nvim_create_augroup("gopls_format_" .. buf, { clear = true }),
-        callback = function()
-          vim.lsp.buf.format({ async = false })
-        end,
-      })
-    end
+
   end,
 })

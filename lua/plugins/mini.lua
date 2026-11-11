@@ -153,7 +153,7 @@ clue.setup({
     { mode = "n", keys = "<Leader>g", desc = "+git" },
     { mode = "n", keys = "<Leader>l", desc = "+lsp" },
     { mode = "n", keys = "<Leader>b", desc = "+buffer" },
-    { mode = "n", keys = "<Leader>e", desc = "+errors/diagnostics" },
+    { mode = "n", keys = "<Leader>e", desc = "Explorer" },
     { mode = "n", keys = "<Leader>m", desc = "+marks/harpoon" },
     { mode = "n", keys = "<Leader>s", desc = "+search/swap" },
   },
@@ -201,11 +201,11 @@ require("mini.jump").setup({
 })
 
 -- Jump anywhere visible with labeled targets (replaces flash.nvim s/S)
--- <CR> in normal/visual/op-pending: shows labels on every 2-char spot; type
--- the label character(s) to teleport there.
+-- <leader>j in normal/visual/op-pending: shows labels on every 2-char spot; type
+-- the label character(s) to teleport there. (Not <CR>, which quickfix needs.)
 require("mini.jump2d").setup({
   view     = { dim = true, n_steps_ahead = 2 },
-  mappings = { start_jumping = "<CR>" },
+  mappings = { start_jumping = "<leader>j" },
 })
 
 -- ── Session management (replaces persistence.nvim) ───────────────────────────
@@ -269,18 +269,8 @@ require("mini.bracketed").setup({
   yank       = { suffix = "y" },
 })
 
--- ── Trailing whitespace (highlight + trim on save) ───────────────────────────
+-- ── Trailing whitespace (highlight only; trimming on save is in autocmds.lua) ─
 require("mini.trailspace").setup()
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group    = vim.api.nvim_create_augroup("mini_trailspace_trim", { clear = true }),
-  callback = function()
-    -- Skip special buffers (nofile, terminal, etc.)
-    if vim.bo.buftype == "" then
-      MiniTrailspace.trim()
-      MiniTrailspace.trim_last_lines()
-    end
-  end,
-})
 
 -- ── Frecency-based file visits (<leader>fv) ──────────────────────────────────
 -- Tracks file opens; <leader>fv picks from recent files for the cwd.

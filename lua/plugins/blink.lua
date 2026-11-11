@@ -20,7 +20,7 @@ require("blink.cmp").setup({
         if cmp.snippet_active() then return cmp.accept() end
         if cmp.is_visible() then return cmp.select_and_accept() end
       end,
-      "fallback",   -- falls through to codeium ghost-text accept
+      "fallback",   -- falls through to inserting a literal tab
     },
     ["<S-Tab>"] = { "snippet_backward", "fallback" },
     ["<C-n>"]   = { "select_next", "fallback" },

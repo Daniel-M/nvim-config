@@ -17,6 +17,8 @@ return {
       gofumpt        = true,
       usePlaceholders = true,
       completeUnimported = true,
+      diagnosticsDelay = "250ms",
+      directoryFilters = { "-**/node_modules", "-**/.git" },
       hints = {
         assignVariableTypes    = true,
         compositeLiteralFields  = true,
