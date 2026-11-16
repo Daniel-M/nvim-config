@@ -1,5 +1,4 @@
--- lsp/vtsls.lua — Vtsls TypeScript Language Server
--- Install: npm install -g @vtsls/language-server
+-- ~/.config/nvim/after/lsp/vtsls.lua
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
@@ -8,15 +7,6 @@ return {
     local cmd = vim.fn.executable(local_bin) == 1 and local_bin or "vtsls"
     return vim.lsp.rpc.start({ cmd, "--stdio" }, dispatchers)
   end,
-  filetypes = {
-    "typescript",
-    "typescriptreact",
-    "javascript",
-    "javascriptreact",
-    "typescript.tsx",
-    "javascript.jsx",
-  },
-  root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
   settings = {
     vtsls = {
       autoUseWorkspaceTsdk = true,
