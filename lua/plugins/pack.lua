@@ -18,6 +18,9 @@ vim.pack.add({
   -- Completion engine (use stable v1 branch)
   "https://github.com/Saghen/blink.cmp",
 
+  -- Snippets
+  "https://github.com/rafamadriz/friendly-snippets",
+
   -- Fuzzy finder
   "https://github.com/nvim-lua/plenary.nvim",
   "https://github.com/nvim-telescope/telescope.nvim",

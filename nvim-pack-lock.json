@@ -28,6 +28,10 @@
       "rev": "1d674b416df08e5c54e442503b7703a0df462acf",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
+    "friendly-snippets": {
+      "rev": "7a1c9f7897a4eb078b157a04c7af81e5869215b1",
+      "src": "https://github.com/rafamadriz/friendly-snippets"
+    },
     "gitsigns.nvim": {
       "rev": "8d82c240f190fc33723d48c308ccc1ed8baad69d",
       "src": "https://github.com/lewis6991/gitsigns.nvim"

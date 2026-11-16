@@ -4,7 +4,9 @@
 -- Enable each server here; Neovim auto-attaches on matching filetypes.
 
 vim.lsp.enable({
-  "ts_ls",
+  -- "ts_ls",
+  "vtsls",
+  "oxlint",
   "eslint",
   "pyright",
   "ruff",
