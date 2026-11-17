@@ -16,6 +16,49 @@ require("ts-error-translator").setup({
   auto_attach = true,
 })
 
+-- ── Organize imports on save (vtsls) ─────────────────────────────────────────
+-- Requests only source.organizeImports for the whole document. Asking for the
+-- kind explicitly matters: the unfiltered <leader>ca menu doesn't include it.
+-- Synchronous, so the edit is applied before the buffer is written.
+local function organize_imports(bufnr)
+  local client = vim.lsp.get_clients({ bufnr = bufnr, name = "vtsls" })[1]
+  if not client then return end
+
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
+  local params = {
+    textDocument = vim.lsp.util.make_text_document_params(bufnr),
+    range = {
+      start = { line = 0, character = 0 },
+      ["end"] = { line = line_count, character = 0 },
+    },
+    context = { only = { "source.organizeImports" }, diagnostics = {} },
+  }
+
+  local res = client:request_sync("textDocument/codeAction", params, 1000, bufnr)
+  for _, action in ipairs(res and res.result or {}) do
+    if not action.edit and not action.command then
+      -- Some servers only return the edit after resolve
+      local resolved = client:request_sync("codeAction/resolve", action, 1000, bufnr)
+      action = resolved and resolved.result or action
+    end
+    if action.edit then
+      vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
+    end
+    -- _typescript.* commands are client-side hooks (VS Code's TS extension
+    -- handles them); vtsls doesn't implement them, so don't send them.
+    local cmd = action.command
+    if cmd and not (type(cmd) == "table" and cmd.command and cmd.command:match("^_typescript%.")) then
+      client:exec_cmd(cmd, { bufnr = bufnr })
+    end
+  end
+end
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = vim.api.nvim_create_augroup("ts_organize_imports", { clear = true }),
+  pattern = { "*.ts", "*.tsx", "*.mts", "*.cts", "*.js", "*.jsx", "*.mjs", "*.cjs" },
+  callback = function(ev) organize_imports(ev.buf) end,
+})
+
 -- Keymaps (only active in TS/JS files via ftplugin would be cleaner,
 -- but top-level is fine for a global <leader>tt binding)
 vim.api.nvim_create_autocmd("FileType", {

@@ -71,6 +71,13 @@ require("mini.files").setup({
   },
   options = { use_as_default_explorer = true },
 })
+-- Non-blocking hint when the explorer opens (doesn't take focus or cover the tree)
+vim.api.nvim_create_autocmd("User", {
+  pattern = "MiniFilesExplorerOpen",
+  callback = function()
+    vim.notify("mini.files: press g? for help", vim.log.levels.INFO, { title = "Explorer" })
+  end,
+})
 vim.keymap.set("n", "<leader>e", function()
   if not MiniFiles.close() then MiniFiles.open() end
 end, { desc = "Toggle file explorer" })
