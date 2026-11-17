@@ -75,7 +75,27 @@ require("mini.files").setup({
 vim.api.nvim_create_autocmd("User", {
   pattern = "MiniFilesExplorerOpen",
   callback = function()
-    vim.notify("mini.files: press g? for help", vim.log.levels.INFO, { title = "Explorer" })
+    -- vim.notify("mini.files: press g? for help", vim.log.levels.INFO, { title = "Explorer" })
+  vim.notify(
+  [[mini.files: press g? for help
+
+Buffer mappings:
+Close                   │ q
+Go in entry             │ l
+Go in entry plus        │ L
+Go out of directory     │ h
+Go out of directory plus│ H
+Go to bookmark          │ '
+Reset                   │ <BS>
+Reveal cwd              │ @
+Set bookmark            │ m
+Show Help               │ g?
+Synchronize             │ =
+Trim branch left        │ <
+Trim branch right       │ >]],
+  vim.log.levels.INFO,
+  { title = "Explorer" }
+)
   end,
 })
 vim.keymap.set("n", "<leader>e", function()
@@ -133,8 +153,8 @@ require("mini.notify").setup({
   window = {
     config = {
       border = "rounded",
-      max_width_share = 0.35, -- Wrap notification lines at 35% of screen width (great on ultrawide monitors)
-    }
+    },
+    max_width_share = 0.35, -- Wrap notification lines at 35% of screen width (great on ultrawide monitors)
   },
 })
 vim.notify = MiniNotify.make_notify()
