@@ -13,7 +13,13 @@ local lint_augroup = vim.api.nvim_create_augroup("nvim_lint", { clear = true })
 -- on modified buffers re-populates stale errors from disk before saving.
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
   group = lint_augroup,
-  callback = function()
+  callback = function(ev)
+    if vim.bo[ev.buf].buftype ~= "" then
+      return
+    end
+    if vim.bo[ev.buf].filetype == "go" and not vim.fs.root(ev.buf, { "go.mod", "go.work" }) then
+      return
+    end
     lint.try_lint()
   end,
 })

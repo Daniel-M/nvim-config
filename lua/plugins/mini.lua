@@ -130,7 +130,12 @@ require("mini.ai").setup({ n_lines = 500 })
 
 -- Notifications
 require("mini.notify").setup({
-  window = { config = { border = "rounded" } },
+  window = {
+    config = {
+      border = "rounded",
+      max_width_share = 0.35, -- Wrap notification lines at 35% of screen width (great on ultrawide monitors)
+    }
+  },
 })
 vim.notify = MiniNotify.make_notify()
 

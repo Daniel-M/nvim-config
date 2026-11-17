@@ -15,8 +15,12 @@ vim.pack.add({
   -- LSP server config definitions (works with Neovim native LSP)
   "https://github.com/neovim/nvim-lspconfig",
 
-  -- Completion engine (use stable v1 branch)
-  "https://github.com/Saghen/blink.cmp",
+  -- Test coverage gutter signs + summary popup (Go cover.out, Vitest/Jest lcov, Python coverage.json)
+  "https://github.com/andythigpen/nvim-coverage",
+
+  -- Completion engine. Pinned to the v1 branch: main is v2, which requires
+  -- saghen/blink.lib and a different setup API.
+  { src = "https://github.com/Saghen/blink.cmp", version = "v1" },
 
   -- Snippets
   "https://github.com/rafamadriz/friendly-snippets",

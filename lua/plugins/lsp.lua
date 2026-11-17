@@ -21,23 +21,97 @@ vim.lsp.enable({
 
 -- Diagnostic display
 vim.diagnostic.config({
-  virtual_text = {
-    spacing = 4,
-    source = "if_many",
-    prefix = "●",
+  -- NOTE: virtual text runs out of the window
+  -- virtual_text = {
+  --   spacing = 4,
+  --   source = "if_many",
+  --   prefix = "●",
+  -- },
+  virtual_text = false,
+  virtual_lines = {
+    current_line = true
   },
   signs = {
     text = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN]  = " ",
-      [vim.diagnostic.severity.HINT]  = " ",
-      [vim.diagnostic.severity.INFO]  = " ",
+      -- [vim.diagnostic.severity.ERROR] = " ",
+      -- [vim.diagnostic.severity.WARN]  = " ",
+      -- [vim.diagnostic.severity.HINT]  = " ",
+      -- [vim.diagnostic.severity.INFO]  = " ",
+      [vim.diagnostic.severity.ERROR] = "\u{ea87} ", --  (nf-cod-error)
+      [vim.diagnostic.severity.WARN]  = "\u{ea6c} ", --  (nf-cod-warning)
+      [vim.diagnostic.severity.HINT]  = "\u{f400} ", --  (nf-oct-light_bulb)
+      [vim.diagnostic.severity.INFO]  = "\u{ea74} ", --  (nf-cod-info)
     },
   },
   underline = true,
   update_in_insert = false,
   severity_sort = true,
-  float = { border = "rounded", source = true },
+  -- Text should be wrapped
+  float = { border = "rounded", source = true, wrap = true, max_width = 80 },
+})
+
+-- Diagnostics as notifications
+-- Ensure mini.notify is active (if not already initialized in your mini.nvim setup)
+if package.loaded["mini.notify"] or pcall(require, "mini.notify") then
+  local notify = require("mini.notify")
+  if not _G.MiniNotify then
+    notify.setup()
+    vim.notify = notify.make_notify()
+  end
+end
+
+-- Forward new/changed diagnostics to top-right notifications
+local diag_notify_group = vim.api.nvim_create_augroup("DiagnosticNotifications", { clear = true })
+local last_notified = {}
+
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+  group = diag_notify_group,
+  callback = function(ev)
+    -- Skip while actively typing in insert mode
+    if vim.fn.mode():match("^[iR]") then
+      return
+    end
+
+    local diagnostics = ev.data.diagnostics or {}
+    if #diagnostics == 0 then
+      last_notified[ev.buf] = nil
+      return
+    end
+
+    -- Filter to ERROR and WARN only (change to HINT/INFO if you want everything)
+    local important = vim.tbl_filter(function(d)
+      return d.severity <= vim.diagnostic.severity.WARN
+    end, diagnostics)
+
+    if #important == 0 then
+      return
+    end
+
+    -- Sort by severity (errors first), then line number
+    table.sort(important, function(a, b)
+      if a.severity ~= b.severity then
+        return a.severity < b.severity
+      end
+      return a.lnum < b.lnum
+    end)
+
+    local top = important[1]
+    local level = top.severity == vim.diagnostic.severity.ERROR
+        and vim.log.levels.ERROR
+      or vim.log.levels.WARN
+
+    local source = top.source and ("[" .. top.source .. "] ") or ""
+    local extra = #important > 1 and string.format(" (+%d more)", #important - 1) or ""
+    local msg = string.format("%sLine %d: %s%s", source, top.lnum + 1, top.message, extra)
+
+    -- Avoid spamming identical notifications on cursor moves / redraws
+    if last_notified[ev.buf] == msg then
+      return
+    end
+    last_notified[ev.buf] = msg
+
+    vim.notify(msg, level)
+  end,
 })
 
 -- Buffer-local keymaps and settings on LSP attach
